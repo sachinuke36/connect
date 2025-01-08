@@ -1,4 +1,5 @@
 import React from "react";
+import { useAppContext } from "../contexts/Contexts";
 
 interface ModalProps {
   isOpen: boolean;
@@ -7,6 +8,7 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
+  const {setShowItems} = useAppContext()
   if (!isOpen) return null;
 
   return (
@@ -15,7 +17,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
         <div className="p-4">
           <button
             className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
-            onClick={onClose}
+            onClick={()=>{onClose(); setShowItems("FRIENDS")}}
           >
             ✖
           </button>

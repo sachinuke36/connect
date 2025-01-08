@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import GroupHandler from "../action/GroupHandler";
 import { getUser } from "../action/authHandlers";
 const CreateGroup = () => {
-    const { isModalOpen, closeModal, friends, selected, updateGroup, groups, setUpdateGroup, allUsers } = useAppContext();
+    const { isModalOpen, closeModal, friends, selected, updateGroup, groups, setUpdateGroup, allUsers, setShowItems } = useAppContext();
     const { createGroup, GroupUpdate } = GroupHandler()
     const [selectedFriends, setSelectedFriends] = useState<string[]>([]);
     const [groupname, setGroupName] = useState<string>();
@@ -67,7 +67,7 @@ const CreateGroup = () => {
                             </div>
                         </div>
                         <div className="flex gap-3">
-                            <button className="mt-6 px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600" onClick={closeModal}>Close</button>
+                            <button className="mt-6 px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600" onClick={()=>{closeModal();  setShowItems("FRIENDS")}}>Close</button>
                             <button onClick={() => {
                                 if (updateGroup) {
                                     GroupUpdate(selectedFriends, groupname!, groupDescription!);

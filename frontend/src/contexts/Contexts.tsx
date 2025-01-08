@@ -1,7 +1,7 @@
 
 import { createContext, ReactNode, useContext, useEffect, useState, useCallback } from "react";
 // import { getFriendRequest } from "../action/friendRequestHandler";
-type items = "FRIENDS" | "NONFRIENDS" | "GROUPS"
+type items = "FRIENDS" | "GROUPS" | "NONFRIENDS" | "CREATEGROUP"
  
 
 
@@ -140,7 +140,7 @@ export const AppContexProvider = ({ children }: { children: ReactNode }) => {
                 groups, setGroups,
                 grouChats, setGroupChats,
                 showGroupInfo, setShowGroupInfo,
-                updateGroup, setUpdateGroup
+                updateGroup, setUpdateGroup,
             }}
         >
             {children}
