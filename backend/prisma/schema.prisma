@@ -1,0 +1,222 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Gender{
+  MALE
+  FEMALE
+}
+
+enum FriendRequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model User{
+  userId String @id @default(uuid())
+  fname String
+  lname String
+  username String @unique
+  password String
+  gender Gender @default(MALE)
+
+  friendRequestSender FriendRequest[] @relation("sender")
+  friendRequestReceiver FriendRequest[] @relation("receiver")
+
+  conversations Conversation[]
+  messages Message[]
+
+  groups Group[]
+  groupAdmin Group[] @relation("createdBy")
+  groupChats GroupChat[]
+
+}
+
+
+model FriendRequest{
+  requestId String @id @default(uuid())
+
+  senderId String
+  receiverId String
+  requestSender User @relation("sender",fields: [senderId], references: [userId])
+  requestReceiver User @relation("receiver",fields: [receiverId], references: [userId])
+
+  status FriendRequestStatus @default(PENDING)
+  sent_at DateTime @default(now())
+  @@unique([receiverId, senderId])
+
+}
+
+model Conversation{
+  conversationId String @id @default(uuid())
+
+  participantIds String[]
+  participants User[]
+
+  messagesIds String[]
+  messages Message[]
+}
+
+
+
+model Message{
+  messageId String @id @default(uuid())
+
+  conversationId String
+  conversation Conversation @relation(fields: [conversationId], references: [conversationId])
+
+  senderId String
+  sender User @relation(fields: [senderId], references: [userId])
+
+  body String
+}
+
+model Group{
+  groupId String @id @default(uuid())
+  groupName String
+  description String?
+
+  createdBy String  
+  admin User @relation("createdBy",fields: [createdBy], references: [userId])
+
+  membersIds String[]
+  members User[]
+
+  groupChats GroupChat[] 
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model GroupChat{
+  groupChatId String @id @default(uuid())
+  groupId String 
+  groupchat Group @relation(fields: [groupId], references: [groupId])
+
+  senderId String
+  sender User @relation(fields: [senderId], references: [userId])
+
+  messageBody String
+
+  sent_at DateTime @default(now())
+}
+
+
+
+
+
+
+
+// model User{
+//   userId Int @id @default(autoincrement())
+//   fname String 
+//   lname String
+//   username String @unique
+//   password String 
+
+//   friendShipIds Int[]
+//   friendShip FriendShip[]
+
+//   friendRequestsIds Int[]
+//   friendRequests FriendRequest[] @relation("ReceivedRequest",fields: [friendRequestsIds], references: [userId])
+//   sentRequestsId Int[]
+//   sentRequests FriendRequest[] @relation("SentRequest")
+
+//   groupIds String[] 
+//   groups Group[] 
+//   groupChatIds Int[]
+//   groupChats      GroupChat[]      @relation("userGroupChats")
+
+//   chatsSent Chat[] @relation("sender")
+//   chatsSentIds Int[]
+//   chatsReceivedIds Int[]
+//   chatsReceived Chat[] @relation("receiver")
+
+//   updated_at DateTime @default(now()) @updatedAt
+//   created_at DateTime @default(now())
+// }
+
+// model FriendShip{
+//   friendshipId Int @id @default(autoincrement())
+//   status FriendRequestStatus
+//   user User[]
+//   friendId Int
+// }
+
+
+
+
+
+// // model Friend{
+// //   friendId  Int    @id @default(autoincrement())
+// //   user User @relation("UserFriends",fields: [userId], references: [userId])
+// //   userId Int
+// //   friend    User   @relation("UserAsFriend",fields: [friendUserId], references: [userId])
+// //   friendUserId Int
+// //   @@unique([userId, friendUserId])
+// // }
+
+// model FriendRequest {
+//   requestId Int @id @default(autoincrement())
+//   sender User @relation("SentRequest",fields: [senderId], references: [userId])
+//   senderId Int
+
+//   receiver User @relation("ReceivedRequest",fields: [receiverId], references: [userId])
+//   receiverId Int
+
+//   status FriendRequestStatus @default(PENDING)
+//   created_at DateTime @default(now())
+// }
+
+// model Group{
+//   groupId Int @id @default(autoincrement())
+//   groupName String
+//   description String?
+
+//   membersId Int[]
+//   members User[]
+
+//   groupChatIds Int[]
+//   groupChat GroupChat[] @relation("groupChats")
+
+//   created_at DateTime @default(now())
+//   updated_at DateTime @default(now()) @updatedAt
+// }
+
+// model Chat{
+//   chatId Int @id @default(autoincrement())
+
+//   sender User @relation("sender", fields: [senderId], references: [userId])
+//   senderId Int
+
+//   receiver User @relation("receiver", fields: [receiverId], references: [userId])
+//   receiverId Int
+
+//   message String
+
+//   sent_at DateTime @default(now())
+// }
+
+// model GroupChat{
+//   groupChatId Int @id @default(autoincrement())
+
+//   group       Group   @relation("groupChats", fields: [groupId], references: [groupId])
+//   groupId Int
+
+//   sender      User    @relation("userGroupChats", fields: [senderId], references: [userId])
+//   senderId Int
+
+//   message String
+//   sent_at DateTime @default(now())
+// }

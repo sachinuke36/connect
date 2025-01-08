@@ -1,0 +1,4 @@
+npm i --save-dev prisma
+npx prisma init --datasource-provider postgresql (to initialise)
+npx prisma format
+npx prisma migrate dev --name create_user_schema
