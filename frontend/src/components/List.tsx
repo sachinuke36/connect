@@ -41,7 +41,7 @@ const List = () => {
                 groups?.map((i: any, k:any) =>
                     <div className={`flex w-full py-2 border flex-col  ${(selected?.id === i.groupId) ? "bg-slate-400" : null}`} onClick={() => setSelected({type:"group",id:i.groupId})} key={k}>
                         <div className="flex px-2 items-center gap-3">
-                            <div className="rounded-[50%] border h-[30px] w-[30px]"></div>
+                            <div className="rounded-[50%] border bg-white h-[30px] w-[30px]"></div>
                             <div>{i.groupName}</div>
                         </div>
                     </div>
@@ -49,7 +49,7 @@ const List = () => {
                     List?.map((i: any) =>
                         <div className={`flex w-full py-2 border flex-col  ${(selected?.id === i.userId) ? "bg-slate-400" : null}`} onClick={() => setSelected({type:"chats", id:i.userId})} key={i.username}>
                             <div className="flex px-2 items-center gap-3">
-                                <div className="rounded-[50%] border h-[30px] w-[30px]"></div>
+                                <div className="rounded-[50%] border bg-white h-[30px] w-[30px]"></div>
                                 <div>{i.fname} {i.lname}</div>
                             <div>{(showItems === "NONFRIENDS") && (i.userId !== userId) ? 
                             <button onClick={()=>{

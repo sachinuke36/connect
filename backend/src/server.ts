@@ -1,11 +1,15 @@
 import express, { NextFunction, Request, Response } from 'express'
 import router from './routes/router';
 import cors from 'cors'
-const app = express();
+import {createServer} from 'node:http';
+import {Server} from 'socket.io'
+import {app, server} from './socketHandler'
+
+const origin = "http://localhost:5173"
 const PORT = process.env.PORT || 8000;
 
 //middlewares
-app.use(cors({origin: "http://localhost:5173", credentials: true}))
+app.use(cors({origin: origin, credentials: true}))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -13,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api',router());
 
-app.listen(PORT,()=>{
+server.listen(PORT,()=>{
   console.log("Server is running on : " + PORT )
 })
 

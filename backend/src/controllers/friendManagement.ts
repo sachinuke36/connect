@@ -2,10 +2,14 @@ import { User } from "@prisma/client";
 import { prisma } from "../db/db.config";
 import express from "express"
 import { getAllUsers, getUser } from "./authControllers";
+import { Server } from "socket.io";
+import { getReceiverSocketId } from "../socketHandler";
 
 
 export class Friend{
-    constructor() {
+    private io : Server;
+    constructor(io : Server) {
+        this.io = io
         this.sendFriendRequest = this.sendFriendRequest.bind(this);
         this.acceptRequest = this.acceptRequest.bind(this);
         this.rejectFriendRequest = this.rejectFriendRequest.bind(this);
@@ -21,6 +25,8 @@ export class Friend{
             const sendRequest = await prisma.friendRequest.create({
             data : { senderId, receiverId }
             });
+            const receiverSocketId = getReceiverSocketId(receiverId);
+            this.io.to(receiverSocketId).emit("friend-request-sent", { senderId, receiverId });
             return res.json({message: "friend request sent successfully!", data: sendRequest});
         } catch (error) {
             console.log("Error in sending friend request! : ", error)
@@ -39,6 +45,8 @@ export class Friend{
             data:{
                 status: "ACCEPTED"
             }}) 
+            const senderSocketId = getReceiverSocketId(senderId);
+            this.io.to(senderSocketId).emit("friend-request-accepted",{message: "friend request accepted", userId})
             return res.json({message: " friend requested accepted!", data: friendRequest});
         } catch (error) {
             console.log("Error in accepting Friend Request: ",error);

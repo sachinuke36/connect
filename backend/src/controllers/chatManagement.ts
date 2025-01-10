@@ -2,11 +2,15 @@ import { Conversation, Message, User } from '@prisma/client';
 import { prisma } from '../db/db.config';
 import express from 'express'
 import { getAllUsers, getUser } from './authControllers';
+import { Server } from "socket.io";
+import { getReceiverSocketId } from '../socketHandler';
 
 export class Chat{
     private chats: Message[];
-    constructor(){
+    private io: Server;
+    constructor(io: Server){
         this.chats = [];
+        this.io = io
         this.getConversationLists = this.getConversationLists.bind(this);
         this.createConversation = this.createConversation.bind(this);
         this.getChats = this.getChats.bind(this);
@@ -54,7 +58,10 @@ export class Chat{
                                 senderId : user.userId,
                                 body : messageBody
                             }
-                        })
+                        });
+                    // socket connection for message goes here
+                    const friendSocketId = getReceiverSocketId(friendId);
+                        this.io.to(friendSocketId).emit("newMessage",{senderId: user.userId, body:messageBody})
                 return res.json({message: " Message Sent Successfully !", data: message});
         } catch (error) {
             console.log("Error in sendChat: ",error);

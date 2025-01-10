@@ -1,7 +1,8 @@
 import { Friend } from "../controllers/friendManagement";
 import { Router } from "express";
+import { io } from "../socketHandler";
 
-const friend = new Friend();
+const friend = new Friend(io);
 
 export default (router: Router)=>{
   router.post("/addFriend", friend.sendFriendRequest);

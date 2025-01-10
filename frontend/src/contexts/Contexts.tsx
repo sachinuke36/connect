@@ -97,7 +97,7 @@ export const AppContexProvider = ({ children }: { children: ReactNode }) => {
         } catch (error) {
             console.error(error);
         } 
-    }, [BACKEND_URL]); 
+    }, [addFriends, showItems, friendRequests, BACKEND_URL]); 
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -140,7 +140,7 @@ export const AppContexProvider = ({ children }: { children: ReactNode }) => {
                 groups, setGroups,
                 grouChats, setGroupChats,
                 showGroupInfo, setShowGroupInfo,
-                updateGroup, setUpdateGroup,
+                updateGroup, setUpdateGroup, getAllUsers
             }}
         >
             {children}

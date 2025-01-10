@@ -7,7 +7,7 @@ const GroupInfo = () => {
 
   return (
     <div className='flex border h-full flex-col py-3 items-center  gap-4'>
-      <div onClick={()=>setShowGroupInfo(false)} className='flex item-left w-full pl-3'>X</div>
+      <div onClick={()=>setShowGroupInfo(false)} className='flex item-left w-full pl-3 cursor-pointer'>X</div>
         {/* Image */}
         <div className='border rounded-full w-[200px] h-[200px]'></div>
         {/* Description */}

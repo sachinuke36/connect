@@ -1,7 +1,8 @@
+import { io } from "../socketHandler";
 import { Chat } from "../controllers/chatManagement";
 import { Router } from "express";
 
-const chat = new Chat();
+const chat = new Chat(io);
 
 export default (router: Router)=>{
     router.post("/sendChat",chat.sendChat);

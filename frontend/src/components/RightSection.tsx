@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IoSend } from "react-icons/io5";
 import { useAppContext } from "../contexts/Contexts";
-import { sendChat } from "../action/chatHandler";
+import chatHandler from "../action/chatHandler";
 import GroupChatHandler from "../action/GroupChatHandler";
 import { getUser } from "../action/authHandlers";
 import { SlOptionsVertical } from "react-icons/sl";
@@ -14,6 +14,7 @@ const RightSection = () => {
     const { friends, chats, selected, BACKEND_URL, grouChats, groups, showGroupInfo, setShowGroupInfo, setUpdateGroup, openModal } = useAppContext();
     const { sendGroupChat } = GroupChatHandler();
     const { leaveGroup } = GroupHandler();
+    const {sendChat} = chatHandler()
     const userId = getUser()
     const [messageBody, setMessageBody] = useState<string>("");
     const [showOptions, setShowOptions] = useState<boolean>(false);
@@ -29,7 +30,8 @@ const RightSection = () => {
 
     }
 
-    useEffect(()=>{setShowOptions(false)},[selected])
+    useEffect(()=>{setShowOptions(false)},[selected]);
+    useEffect(()=>setShowGroupInfo(false),[selected?.type])
 
     useEffect(() => {
         if (chatContainerRef.current) {
@@ -55,7 +57,7 @@ const RightSection = () => {
                                         {selected?.type === "group" && <p className="text-[12px]"> click here for group info</p>}
                                     </div>
                                 </div>
-                                {selected?.type === "group" && <p onClick={() => setShowOptions(prev => !prev)}>{showOptions ? <ImCross /> : <SlOptionsVertical />} </p>}
+                                {selected?.type === "group" && <p className="cursor-pointer" onClick={() => setShowOptions(prev => !prev)}>{showOptions ? <ImCross /> : <SlOptionsVertical />} </p>}
                             </div>}
                     </div>
                 </div>
