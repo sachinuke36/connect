@@ -2,9 +2,13 @@ import express from 'express'
 import { getAllUsers, getUser } from './authControllers';
 import { prisma } from '../db/db.config';
 import { User } from '@prisma/client';
+import { Server } from 'socket.io';
+import { getReceiverSocketId } from '../socketHandler';
 
 export class Group{
-    constructor() {
+    private io : Server
+    constructor(io:Server) {
+        this.io = io;
         this.createGroup = this.createGroup.bind(this);
         this.getGroup = this.getGroup.bind(this);
         this.getGroupMembers = this.getGroupMembers.bind(this);
@@ -24,6 +28,14 @@ export class Group{
                 data: { groupName, description: groupDescription, membersIds, createdBy: adminId}
             });
             console.log(response);
+            const user = (await getAllUsers()).find((u:any)=>u.userId === adminId);
+            console.log("user", user);
+            membersIds.forEach((membersId:string)=>{
+                    if(membersId !== adminId){
+                        const memberSocketId = getReceiverSocketId(membersId);
+                        this.io.to(memberSocketId).emit("createGroup",{message:`${user?.fname} added you to ${groupName}`, data: { groupName, description: groupDescription, membersIds, createdBy: adminId}})
+                    }
+            })
             return res.status(200).json({message: "Group created successfully !"})
         } catch (error) {
             console.log(error);

@@ -1,9 +1,11 @@
 import { prisma } from '../db/db.config';
 import express from 'express'
 import { Group } from './groupControllers';
+import { Server } from 'socket.io';
 export class groupChat{
-
-    constructor(){
+    private io : Server;
+    constructor(io: Server){
+        this.io = io;
         this.sendGroupChat = this.sendGroupChat.bind(this)
     }
 
@@ -14,7 +16,14 @@ export class groupChat{
                 groupId,
                 senderId ,
                 messageBody 
-            }})
+            }});
+            //socket connection goes here
+            this.io.to(groupId).emit("newGroupMessage", {
+                groupId,
+                senderId,
+                messageBody,
+            });
+
             return res.status(200).json({message:"message sent successfully!", data: response})
         } catch (error) {
             console.log("Error in sendgroupchat",error);

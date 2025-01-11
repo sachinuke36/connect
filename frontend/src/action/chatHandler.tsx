@@ -7,6 +7,7 @@ const chatHandler = () => {
     const {socket} = useSocketContext();
     const {chats, setChats} = useAppContext();
     const sendChat = async(messageBody:string,friendId:string, BACKEND_URL:string )=>{
+        if(!friendId) return;
         const user = localStorage.getItem("user");
         const userId = getUser()
         if(!user) return;

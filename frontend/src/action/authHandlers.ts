@@ -2,10 +2,12 @@ import { useState } from "react";
 import { requestAction, requestType } from "../types/request.types";
 import { useAuth } from "../contexts/AuthContexts";
 import Cookies from "js-cookie";
-
+import { useNavigate } from "react-router-dom";
 
 export const useLogin = ()=>{
-    const {BACKEND_URL, user, setIsLoggedIn } = useAuth()
+    const {BACKEND_URL, user, setIsLoggedIn } = useAuth();
+    const navigate = useNavigate();
+
     const [loading, setLoading] = useState<boolean>(false);
     const login = async (username:string | undefined, password:string | undefined) : Promise<any>=>{
         const loginData : requestAction = { type: requestType.login, payload: { username, password}};
@@ -24,6 +26,8 @@ export const useLogin = ()=>{
            if(data.success){
             setIsLoggedIn(true);
             localStorage.setItem("user",JSON.stringify(data.data));
+            navigate("/");
+            window.location.reload();
            }
            console.log(user);
             
@@ -39,7 +43,8 @@ export const useLogin = ()=>{
 
 
 export const useRegistration = ()=>{
-    const {BACKEND_URL, user, setIsLoggedIn } = useAuth()
+    const {BACKEND_URL, user, setIsLoggedIn } = useAuth();
+    const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(false);
 
     const register = async (username:string | undefined, password:string | undefined, fname: string | undefined, lname: string | undefined, gender: string | undefined)=>{
@@ -47,6 +52,7 @@ export const useRegistration = ()=>{
         const registrationData : requestAction = { type: requestType.registration, payload: { username, password, fname, lname, gender}};
 
         const success = handlInputErrors(registrationData);
+        if(!success) return;
         setLoading(true);
 
         try {
@@ -59,12 +65,12 @@ export const useRegistration = ()=>{
                const data = await res.json();
                if(data.success){
                 setIsLoggedIn(true);
+                navigate("/");
+                window.location.reload();
                 localStorage.setItem("user",JSON.stringify(data.data));
                }
                console.log(user);
-            if(success){
-                console.log(registrationData.payload);
-            }
+            
         } catch (error) {
             console.log("Error in Login");
         }finally{

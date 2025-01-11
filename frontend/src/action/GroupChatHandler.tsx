@@ -1,9 +1,11 @@
 import { useCallback, useEffect } from "react";
 import { useAppContext } from "../contexts/Contexts"
 import { getUser } from "./authHandlers";
+import { useSocketContext } from "../contexts/SocketContext";
 
 const GroupChatHandler = () => {
-    const {BACKEND_URL, selected, setSelected} = useAppContext();
+    const {BACKEND_URL, selected, setSelected, setGroupChats} = useAppContext();
+    const {socket} = useSocketContext()
     
     const getGroupChats = useCallback(async()=>{
         try {
@@ -15,6 +17,7 @@ const GroupChatHandler = () => {
                     body : JSON.stringify({groupId : selected?.id})
                 })
                 const data = (await res.json()).data;
+                
                 console.log(data)
             }
         } catch (error) {
@@ -31,6 +34,7 @@ const GroupChatHandler = () => {
     
 
  const sendGroupChat = async(messageBody:string,groupId:string,)=>{
+    if(!groupId) return;
     const userId = getUser()
     try {
         const res = await fetch(BACKEND_URL + "/api/sendgroupchat",{
@@ -40,6 +44,13 @@ const GroupChatHandler = () => {
             body : JSON.stringify({ groupId, senderId : userId ,messageBody })
         })
         const data = (await res.json()).data;
+        socket?.emit("newGroupMessage",{ groupId, senderId : userId ,messageBody });
+        // groupChat handling here
+        // groupId: string;
+    //senderId: string;
+   // messageBody: string;
+
+        
         console.log(data);
     } catch (error) {
         console.log("Error in sendChat",error);

@@ -9,6 +9,10 @@ interface SocketData {
   interface UserToSocketIdMap {
     [userId: string]: string;
   }
+  interface SocketToGroupMap {
+    [socketId: string]: Set<string>;
+  }
+  
   const origin = "http://localhost:5173"
   const app = expess();
   const server = createServer(app);
@@ -21,7 +25,7 @@ interface SocketData {
   });
 
 const userToSocketIdMap : UserToSocketIdMap = {};
-const socketToGroupMap = {}
+const socketToGroupMap : SocketToGroupMap = {}
   
 io.on("connection",(socket)=>{
     console.log('a user connected : ', socket.id);
@@ -33,10 +37,15 @@ io.on("connection",(socket)=>{
       } else if (userId) {
         userToSocketIdMap[userId] = socket.id;
       }
-      console.log(userToSocketIdMap)
-    // socket.join(userId as string);
-    console.log(`User ${userId} joined room ${userId}`);
 
+      socketToGroupMap[socket.id] = new Set();
+
+      socket.on("joinGroup",(groupId:string)=>{
+        socket.join(groupId);
+        socketToGroupMap[socket.id].add(groupId);
+        console.log(socketToGroupMap)
+        console.log(`User ${socket.id} joined group with ID: ${groupId}`);
+      })
       socket.on("disconnect",()=>{
         console.log("user disconnected", socket.id);
         delete userToSocketIdMap[userId[0]]

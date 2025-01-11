@@ -19,7 +19,7 @@ export const AppContexProvider = ({ children }: { children: ReactNode }) => {
     const [showItems, setShowItems] = useState<items>("FRIENDS")
     const [friendRequests, setFriendRequests] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [groups, setGroups] = useState<any>(null);
+    const [groups, setGroups] = useState<any[]>([]);
     const [grouChats, setGroupChats] = useState<any>(null);
     const [showGroupInfo, setShowGroupInfo] = useState<boolean>(false);
     const [updateGroup, setUpdateGroup] = useState<boolean>(false);
@@ -41,7 +41,7 @@ export const AppContexProvider = ({ children }: { children: ReactNode }) => {
         } catch (error) {
             console.log("Error in getChats");
         }
-    }, [userString, BACKEND_URL]); // Dependencies: userString and BACKEND_URL
+    }, []); // Dependencies: userString and BACKEND_URL
 
     const fetChats = useCallback(async () => {
         if (!userString) return;

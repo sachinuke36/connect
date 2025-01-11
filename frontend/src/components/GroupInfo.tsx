@@ -3,7 +3,8 @@ import { useAppContext } from '../contexts/Contexts';
 const GroupInfo = () => {
  const { allUsers , selected, groups, setShowGroupInfo} = useAppContext();
  const groupMembers = groups?.find((g:any)=>g.groupId === selected?.id)?.membersIds.map((id:string)=>allUsers.find((f: any)=>f.userId === id))?.filter((member:any)=>member)
- 
+ const adminId = groups?.find((g:any)=> g.groupId === selected?.id)?.createdBy;
+ const admin = allUsers?.find((u:any)=>u.userId === adminId)
 
   return (
     <div className='flex border h-full flex-col py-3 items-center  gap-4'>
@@ -22,7 +23,7 @@ const GroupInfo = () => {
             <div className='border max-h-[440px] overflow-y-scroll'>
               {
               groupMembers?.map((m:any, k:any)=>(<div className='border w-full p-2 hover:bg-slate-400 cursor-pointer' key={k}>
-              <p>{m?.fname} {m?.lname}</p>
+              <p>{m?.fname} {m?.lname} <span className={(m?.userId === adminId) ? 'border p-1 text-red-300' :""}>{m?.userId === adminId && "admin"}</span></p>
             </div>))
             }
 

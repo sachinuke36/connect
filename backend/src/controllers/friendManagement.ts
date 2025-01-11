@@ -36,10 +36,8 @@ export class Friend{
 
     async acceptRequest(req: express.Request, res: express.Response):Promise<any>{
         const { senderId, userId} = req.body;
-        // const senderId = (await getUser(sender)).userId
         try {
-            // const user = await prisma.user.findFirst({where: {username}});
-            // if(!user) return res.json({message: "No user found !"});
+          
             const friendRequest = await prisma.friendRequest.update({
             where:{ receiverId_senderId: {receiverId: userId, senderId: senderId}},
             data:{

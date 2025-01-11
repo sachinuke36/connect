@@ -1,9 +1,11 @@
 import { useCallback } from 'react';
 import { useAppContext } from '../contexts/Contexts'
 import { getUser } from './authHandlers'
+import { useSocketContext } from '../contexts/SocketContext';
 
 const GroupHandler = () => {
-    const {BACKEND_URL, groups, setGroups, selected} = useAppContext()
+    const {BACKEND_URL, groups, setGroups, selected} = useAppContext();
+    const {socket} = useSocketContext()
     const userId =  getUser();
 
 
@@ -15,6 +17,7 @@ const GroupHandler = () => {
             body : JSON.stringify({ userId, membersIds : selectedFriends, groupName : groupname, groupDescription})
         });
         const data = (await res.json()).message;
+        socket?.emit('createGroup',{ userId, membersIds : selectedFriends, groupName : groupname, groupDescription})
         console.log(data);
     },[BACKEND_URL]);
 

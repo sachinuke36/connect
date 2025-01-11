@@ -1,7 +1,8 @@
+import { io } from "../socketHandler";
 import { Group } from "../controllers/groupControllers";
 import { Router } from "express";
 
-const group = new Group();
+const group = new Group(io);
 
 export default (router: Router)=>{
     router.post("/creategroup",group.createGroup);

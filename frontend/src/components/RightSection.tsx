@@ -11,14 +11,14 @@ import GroupInfo from "./GroupInfo";
 
 
 const RightSection = () => {
-    const { friends, chats, selected, BACKEND_URL, grouChats, groups, showGroupInfo, setShowGroupInfo, setUpdateGroup, openModal } = useAppContext();
+    const { friends, chats, selected, BACKEND_URL, grouChats, groups, showGroupInfo, setShowGroupInfo, setUpdateGroup, openModal, setGroupChats } = useAppContext();
     const { sendGroupChat } = GroupChatHandler();
     const { leaveGroup } = GroupHandler();
     const {sendChat} = chatHandler()
     const userId = getUser()
     const [messageBody, setMessageBody] = useState<string>("");
     const [showOptions, setShowOptions] = useState<boolean>(false);
-    const chatContainerRef = useRef<HTMLDivElement>(null);
+    const lastMessageRef = useRef<HTMLDivElement>(null);
     const friend = friends?.find((f: any) => f?.userId == selected?.id)
     const group = groups?.find((g: any) => g?.groupId == selected?.id);
 
@@ -33,11 +33,13 @@ const RightSection = () => {
     useEffect(()=>{setShowOptions(false)},[selected]);
     useEffect(()=>setShowGroupInfo(false),[selected?.type])
 
-    useEffect(() => {
-        if (chatContainerRef.current) {
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-        }
-    }, [chats]);
+    
+
+    useEffect(()=>{
+        setTimeout(()=>{
+            lastMessageRef.current?.scrollIntoView({behavior: "smooth"})
+        },100)
+    },[chats, grouChats])
 
 
     return (
@@ -75,13 +77,13 @@ const RightSection = () => {
                 </div>}
 
                 {/* Chat Section */}
-                <div ref={chatContainerRef}
-                    className="h-[82%] p-2 flex flex-col gap-2 overflow-y-auto">
+                <div
+                    className=" h-[82%] p-2 flex flex-col gap-2 overflow-y-auto">
                     {(selected?.type === "chats") ?
                         chats?.map((chat: any, index: number) => {
                             const isSender = chat.senderId === userId;
                             return (
-                                <div
+                                <div ref={lastMessageRef}
                                     key={index}
                                     className={`border max-w-max rounded-full p-2 text-center ${isSender
                                         ? "bg-blue-100 self-end text-blue-700"
@@ -92,26 +94,24 @@ const RightSection = () => {
                                 </div>
                             );
                         }) : (
-                            grouChats?.map((chat: any, index: number) => {
-                                const isSender = chat.senderId === userId;
-
-                                return (
-                                    <div
-                                        key={index}
-                                        className={`border max-w-max rounded-full p-2 text-center ${isSender
-                                            ? "bg-blue-100 self-end text-blue-700"
-                                            : "bg-gray-100 self-start text-gray-700"
-                                            }`}
-                                    >
-                                        <p className="text-[10px] text-red-500">{
-                                            friends?.find((f: any) => f.userId === chat.senderId)
-                                                ? `${friends.find((f: any) => f.userId === chat.senderId)?.fname}`
-                                                : "you"
-                                        }</p>
-                                        <p>{chat.messageBody}</p>
-                                    </div>
-                                );
-                            })
+                            
+                            <div className="flex h-full flex-col overflow-y-auto" >
+                                {
+                                    grouChats?.map((chat: any, index: number) => {
+                                        const isSender = chat.senderId === userId;
+                                        return (
+                                            <div  ref={lastMessageRef} key={index} className={`border max-w-max rounded-full p-2 text-center ${isSender ? "bg-blue-100 self-end text-blue-700" : "bg-gray-100 self-start text-gray-700" }`}>
+                                                <p className="text-[10px] text-red-500">{
+                                                    friends?.find((f: any) => f.userId === chat.senderId)
+                                                        ? `${friends.find((f: any) => f.userId === chat.senderId)?.fname}`
+                                                        : "you"
+                                                }</p>
+                                                <p>{chat.messageBody}</p>
+                                            </div>
+                                        );
+                                    })
+                                }
+                            </div>
                         )
                     }
                 </div>

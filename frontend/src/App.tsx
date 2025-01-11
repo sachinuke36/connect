@@ -5,6 +5,8 @@ import { getCookies, useAuth } from "./contexts/AuthContexts"
 import { useEffect } from "react"
 import CreateGroup from "./components/CreateGroup"
 // import Login from "./pages/Login"
+import { ToastContainer, toast } from 'react-toastify';
+
 
 const App = () => {
   const { isLoggedIn, setIsLoggedIn} = useAuth();
@@ -27,15 +29,13 @@ const App = () => {
                 : 
                   <>
                     <Route path="/" element={<Home/>}/>
-                    <Route path="/h" element={<h1>hii</h1>}/>
-                    
-
                   </> 
           }
          <Route path="*"  element={ isLoggedIn ? <Home/> : <Login/>} ></Route>
          
       </Routes>
       <CreateGroup/>
+      <ToastContainer/>
     </>
   )
 }
