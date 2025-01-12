@@ -2,12 +2,16 @@ import { useNavigate } from "react-router-dom";
 import { getUser } from "../action/authHandlers";
 import { useSocketContext } from "../contexts/SocketContext"
 import { useEffect } from "react";
+import { useAppContext } from "../contexts/Contexts";
 
 
 const IncomingCall = ({from, roomId, setShowCall}:{from: string , roomId:string, setShowCall:any} ) => {
     const {socket} = useSocketContext();
     const navigate = useNavigate();
-    const userId = getUser()
+    const {allUsers} = useAppContext()
+    const userId = getUser();
+    const fname = allUsers?.find((u:any)=>u.userId === from).fname;
+    const lname = allUsers?.find((u:any)=>u.userId === from).lname;
     const handleAcceptCall = ()=>{
         setShowCall(false)
         socket?.emit("room:join",{to: from, from:userId, roomId});
@@ -26,7 +30,7 @@ const IncomingCall = ({from, roomId, setShowCall}:{from: string , roomId:string,
 
   return (
     <div className="z-10 absolute border p-2 rounded-md top-2 right-2 bg-white flex flex-col gap-2 items-center justify-center">
-      <p>Incomming call from {from}</p>
+      <p>Incomming call from {fname} {lname}</p>
       <button className="border p-1 rounded-md bg-green-700" onClick={handleAcceptCall}
       >accept</button>
     </div>

@@ -41,16 +41,12 @@ io.on("connection",(socket)=>{
       socket.on("joinGroup",(groupId:string)=>{
         socket.join(groupId);
         socketToGroupMap[socket.id].add(groupId);
-        console.log(socketToGroupMap)
+        // console.log(socketToGroupMap)
         console.log(`User ${socket.id} joined group with ID: ${groupId}`);
       });
 
 
       //sockets for video call
-
-
-
-
       socket.on("room:join",(data)=>{
         const {to, from, roomId} = data;
         const userSocketId = getReceiverSocketId(from);
@@ -59,53 +55,29 @@ io.on("connection",(socket)=>{
         io.to(roomId).emit("user:joined",{userId:from, socketId:socket.id})
         socket.join(roomId);
         io.to(userSocketId).emit("room:join",data);
-        const room = io.sockets.adapter.rooms.get(roomId); // Room data
-        console.log("room: ",room);
       })
 
       socket.on("offer",({from, to, offer})=>{
-        console.log("offer",from, to, offer);
         io.to(getReceiverSocketId(to)).emit("offer", {offer, from, to})
       })
       socket.on("accepted:call", ({from, to})=>{
         io.to(getReceiverSocketId(from)).emit("accepted:call");
       })
       socket.on("answer",({from, to, answer})=>{
-        console.log("answer",from, to, answer);
         io.to(getReceiverSocketId(from)).emit("answer", {answer, from, to})
       });
 
       socket.on("icecandidate",({candidate, to})=>{
-        console.log("candidate",candidate);
         io.to(getReceiverSocketId(to)).emit("icecandidate", {candidate})
       })
-
-
-      socket.on("call:started", ({ offer }) => {
-        socket.broadcast.emit("call:incoming", { offer, from: socket.id });
-      });
     
-      socket.on("call:accepted", ({ answer, to }) => {
-        io.to(to).emit("call:accepted", { answer });
-      });
-    
-
-      socket.on("callinguser",({to, offer})=>{
-        io.to(to).emit("incoming:call",{from: socket.id, offer})
+      socket.on("end-call",({to, from})=>{
+        io.to(getReceiverSocketId(to)).emit("end-call",{to, from})
       })
-
-    // socket.on("call:accepted", ({to, ans}) => {
-    //     io.to(to).emit("call:accepted", {from: socket.id, ans});
-    // });
-
-    // socket.on("peer:nego:needed", ({to, offer}) => {
-    //     io.to(to).emit("peer:nego:needed", {from: socket.id, offer});
-    // });
-
-    // socket.on("peer:nego:done", ({to, ans}) => {
-    //   io.to(to).emit("peer:nego:final", {from: socket.id, ans});
-
-    // });
+      socket.on("call-ended",({callInfo})=>{
+        io.to(getReceiverSocketId(callInfo[0])).emit("call-ended",callInfo)
+        io.to(getReceiverSocketId(callInfo[1])).emit("call-ended",callInfo)
+      })
 
       socket.on("disconnect",()=>{
         console.log("user disconnected", socket.id);

@@ -10,6 +10,7 @@ import GroupHandler from "../action/GroupHandler";
 import GroupInfo from "./GroupInfo";
 import { useNavigate } from "react-router-dom";
 import { useSocketContext } from "../contexts/SocketContext";
+import { IoCall } from "react-icons/io5";
 
 
 const RightSection = () => {
@@ -71,7 +72,7 @@ const RightSection = () => {
                 <div className="border h-[8%] flex flex-col  justify-center">
                     <div className="px-2">
                         {selected?.type === "chats" ?
-                            <>To : <span className="text-red-500">{friend?.fname} {friend?.lname}</span> <button className="border p-1" onClick={handleCall}>call</button></>
+                            <div className="flex w-full justify-between px-2"><p>To : <span className="text-red-500">{friend?.fname} {friend?.lname}</span></p> <button className="p-1" onClick={handleCall}><IoCall className="text-[22px]"/></button></div>
                             : <div  className="flex items-center justify-between">
                                 <div onClick={() => setShowGroupInfo(true)} className="flex w-full items-center gap-2">
                                     <div className="border rounded-full w-[40px] h-[40px]"></div>
@@ -89,8 +90,7 @@ const RightSection = () => {
                         <li onClick={() => {
                             leaveGroup();
                             setShowOptions(prev => !prev);
-                        }} className="hover:bg-slate-300 w-full text-center border">Leave Group</li>
-                        <li className="hover:bg-slate-300 w-full text-center border" >Group Info</li>
+                        }} className="hover:bg-slate-300 w-full text-center border p-1">Leave Group</li>
                         {((selected?.type === "group") && (groups?.find((g:any)=>g.groupId === selected?.id)?.createdBy === userId)) && <li onClick={()=>{setUpdateGroup(true)
                             openModal()
                         }} className="hover:bg-slate-300 w-full text-center border">Edit Group</li>}
@@ -116,7 +116,7 @@ const RightSection = () => {
                             );
                         }) : (
                             
-                            <div className="flex h-full flex-col overflow-y-auto" >
+                            <div className="flex h-full flex-col gap-2 overflow-y-auto" >
                                 {
                                     grouChats?.map((chat: any, index: number) => {
                                         const isSender = chat.senderId === userId;
