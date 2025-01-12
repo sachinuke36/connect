@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { IoSend } from "react-icons/io5";
 import { useAppContext } from "../contexts/Contexts";
 import chatHandler from "../action/chatHandler";
@@ -8,19 +8,23 @@ import { SlOptionsVertical } from "react-icons/sl";
 import { ImCross } from "react-icons/im";
 import GroupHandler from "../action/GroupHandler";
 import GroupInfo from "./GroupInfo";
+import { useNavigate } from "react-router-dom";
+import { useSocketContext } from "../contexts/SocketContext";
 
 
 const RightSection = () => {
     const { friends, chats, selected, BACKEND_URL, grouChats, groups, showGroupInfo, setShowGroupInfo, setUpdateGroup, openModal, setGroupChats } = useAppContext();
     const { sendGroupChat } = GroupChatHandler();
     const { leaveGroup } = GroupHandler();
-    const {sendChat} = chatHandler()
+    const {sendChat} = chatHandler();
+    const {socket } = useSocketContext()
     const userId = getUser()
     const [messageBody, setMessageBody] = useState<string>("");
     const [showOptions, setShowOptions] = useState<boolean>(false);
     const lastMessageRef = useRef<HTMLDivElement>(null);
     const friend = friends?.find((f: any) => f?.userId == selected?.id)
     const group = groups?.find((g: any) => g?.groupId == selected?.id);
+    const navigate = useNavigate();
 
     const handleClick = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -29,6 +33,23 @@ const RightSection = () => {
         setMessageBody("");
 
     }
+    
+
+    const handleCall = useCallback(()=>{
+        const roomId = crypto.randomUUID();
+        socket.emit("room:join",{to : selected?.id, from: userId, roomId });
+    },[socket, selected]);
+
+    const handleRoomJoin = useCallback((data : {to:string, from:string, roomId:string})=>{
+        navigate(`/room/${data.roomId}`);
+    },[])
+
+    useEffect(()=>{
+        socket.on("room:join",(data: any)=>{
+            handleRoomJoin(data)
+        })
+        return (()=> socket?.off("room:join"))
+    },[socket, selected, handleRoomJoin, navigate])
 
     useEffect(()=>{setShowOptions(false)},[selected]);
     useEffect(()=>setShowGroupInfo(false),[selected?.type])
@@ -50,7 +71,7 @@ const RightSection = () => {
                 <div className="border h-[8%] flex flex-col  justify-center">
                     <div className="px-2">
                         {selected?.type === "chats" ?
-                            <>To : <span className="text-red-500">{friend?.fname} {friend?.lname}</span></>
+                            <>To : <span className="text-red-500">{friend?.fname} {friend?.lname}</span> <button className="border p-1" onClick={handleCall}>call</button></>
                             : <div  className="flex items-center justify-between">
                                 <div onClick={() => setShowGroupInfo(true)} className="flex w-full items-center gap-2">
                                     <div className="border rounded-full w-[40px] h-[40px]"></div>

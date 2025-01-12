@@ -6,9 +6,11 @@ import { AppContexProvider } from './contexts/Contexts.tsx'
 import { BrowserRouter } from 'react-router-dom'
 import { AuthContextProvider } from './contexts/AuthContexts.tsx'
 import { SocketContextProvider } from './contexts/SocketContext.tsx'
+// import { WebRTCContextProvider } from './contexts/WebRTCContext.tsx'
 
 createRoot(document.getElementById('root')!).render(
     <AppContexProvider >
+      {/* <WebRTCContextProvider> */}
     <SocketContextProvider>
       <AuthContextProvider>
         <BrowserRouter>
@@ -16,6 +18,7 @@ createRoot(document.getElementById('root')!).render(
         </BrowserRouter>
       </AuthContextProvider>
     </SocketContextProvider>
+    {/* </WebRTCContextProvider> */}
     </ AppContexProvider >
   ,
 )

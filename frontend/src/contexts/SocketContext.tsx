@@ -12,6 +12,7 @@ export const useSocketContext = () => useContext(SocketContext);
 
 export const SocketContextProvider = ({children}:{children: ReactNode})=>{
     const [socket, setSocket] = useState<Socket | null>(null);
+    const [calling, setCalling] = useState<string | null>(null)
     const userId = getUser();
     const {setFriendRequests, allUsers, setFriends,selected, getAllUsers, setChats, setGroupChats, setGroups} = useAppContext()
 
@@ -70,6 +71,12 @@ export const SocketContextProvider = ({children}:{children: ReactNode})=>{
 
             }
             return ()=>{
+                socket?.off("friend-request-sent");
+                socket?.off("friend-request-accepted");
+                socket?.off("newMessage");
+                socket?.off("newGroupMessage");
+                socket?.off("createGroup");
+                
                 socket?.disconnect();
                 setSocket(null);
             }
@@ -85,7 +92,7 @@ export const SocketContextProvider = ({children}:{children: ReactNode})=>{
 
 
     return (<SocketContext.Provider value={{
-        socket, setSocket
+        socket, setSocket, calling, setCalling
     }} >
             {children}
     </SocketContext.Provider>)
