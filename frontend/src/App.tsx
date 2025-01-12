@@ -9,11 +9,13 @@ import { ToastContainer, toast } from 'react-toastify';
 import Room from "./components/VideoCalling"
 import { useSocketContext } from "./contexts/SocketContext"
 import IncomingCall from "./components/IncomingCall"
+import { getUser } from "./action/authHandlers"
 
 
 const App = () => {
   const { isLoggedIn, setIsLoggedIn} = useAuth();
   const {calling, setCalling} = useSocketContext();
+  const userId = getUser()
   const cookies = getCookies();
   const {socket} = useSocketContext();
   const [showCall, setShowCall] = useState<boolean>(false);
@@ -26,17 +28,23 @@ const App = () => {
   },[cookies]);
 
   const handleIncomingCall = useCallback((data:any)=>{
-    setShowCall(true);
     setFrom(data.from);
     setCalling(data.from)
     setRoomId(data.roomId)
+    setShowCall(true);
+    console.log("this is the setShow", showCall)
     console.log(data);
   },[])
 
   useEffect(()=>{
     socket?.on("incoming:call",handleIncomingCall);
+    socket?.on("accepted:call",()=>{
+      setShowCall(false);
+    });
+    
     return ()=>{    
       socket?.off("incoming:call",handleIncomingCall);
+      socket?.off("accepted:call");
     }
   },[socket, handleIncomingCall])
  

@@ -11,6 +11,7 @@ const IncomingCall = ({from, roomId, setShowCall}:{from: string , roomId:string,
     const handleAcceptCall = ()=>{
         setShowCall(false)
         socket?.emit("room:join",{to: from, from:userId, roomId});
+        socket?.emit("accepted:call",{from, to: userId})
         navigate("/room/"+ roomId);
     }
     useEffect(()=>{

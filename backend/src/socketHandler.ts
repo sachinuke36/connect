@@ -67,6 +67,9 @@ io.on("connection",(socket)=>{
         console.log("offer",from, to, offer);
         io.to(getReceiverSocketId(to)).emit("offer", {offer, from, to})
       })
+      socket.on("accepted:call", ({from, to})=>{
+        io.to(getReceiverSocketId(from)).emit("accepted:call");
+      })
       socket.on("answer",({from, to, answer})=>{
         console.log("answer",from, to, answer);
         io.to(getReceiverSocketId(from)).emit("answer", {answer, from, to})
