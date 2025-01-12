@@ -76,7 +76,6 @@ export const SocketContextProvider = ({children}:{children: ReactNode})=>{
                 socket?.off("newMessage");
                 socket?.off("newGroupMessage");
                 socket?.off("createGroup");
-                
                 socket?.disconnect();
                 setSocket(null);
             }
@@ -86,7 +85,7 @@ export const SocketContextProvider = ({children}:{children: ReactNode})=>{
         useEffect(() => {
             if (socket && selected?.type === "group") {
                 socket.emit("joinGroup", selected.id);
-                console.log(`Joined group with ID: ${selected.id}`);
+                // console.log(`Joined group with ID: ${selected.id}`);
             }
         }, [socket, selected]);
 

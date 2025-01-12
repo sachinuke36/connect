@@ -2,6 +2,7 @@ import { getUser } from "../action/authHandlers";
 import friendRequestHandler from "../action/friendRequestHandler";
 // import  sendRequest  from "../action/friendRequestHandler";
 import { useAppContext } from "../contexts/Contexts"
+import { MdGroups } from "react-icons/md";
 
 const List = () => {
    
@@ -39,17 +40,19 @@ const List = () => {
             {
                 (showItems === "GROUPS") ?
                 groups?.map((i: any, k:any) =>
-                    <div className={`flex w-full py-2 border flex-col  ${(selected?.id === i.groupId) ? "bg-slate-400" : null}`} onClick={() => setSelected({type:"group",id:i.groupId})} key={k}>
+                    <div className={`flex w-full py-2 border border-x-0 border-[#1f3445] flex-col  ${(selected?.id === i.groupId) ?"bg-[#1f3445]" : null}`} onClick={() => setSelected({type:"group",id:i.groupId})} key={k}>
                         <div className="flex px-2 items-center gap-3">
-                            <div className="rounded-[50%] border bg-white h-[30px] w-[30px]"></div>
+                            <div className=" flex items-center justify-center text-center  h-[30px] w-[30px]"><MdGroups className="w-full text-2xl"/></div>
                             <div>{i.groupName}</div>
                         </div>
                     </div>
                 ) : (
                     List?.map((i: any) =>
-                        <div className={`flex w-full py-2 border flex-col  ${(selected?.id === i.userId) ? "bg-slate-400" : null}`} onClick={() => setSelected({type:"chats", id:i.userId})} key={i.username}>
+                        <div className={`flex w-full py-2 border border-x-0 border-[#1f3445] flex-col  ${(selected?.id === i.userId) ? "bg-[#1f3445]  text-white" : null}`} onClick={() => setSelected({type:"chats", id:i.userId})} key={i.username}>
                             <div className="flex px-2 items-center gap-3">
-                                <div className="rounded-[50%] border bg-white h-[30px] w-[30px]"></div>
+                                <div className="rounded-[50%] border bg-white h-[30px] w-[30px]">
+                                    <img loading="lazy" src={`https://avatar.iran.liara.run/public/${i.gender === "MALE" ? "boy" :"girl"}?username=${i.fname}`} alt="" />
+                                </div>
                                 <div>{i.fname} {i.lname}</div>
                             <div>{(showItems === "NONFRIENDS") && (i.userId !== userId) ? 
                             <button onClick={()=>{

@@ -10,7 +10,7 @@ import GroupHandler from "../action/GroupHandler";
 import GroupInfo from "./GroupInfo";
 import { useNavigate } from "react-router-dom";
 import { useSocketContext } from "../contexts/SocketContext";
-import { IoCall } from "react-icons/io5";
+import { FaVideo } from "react-icons/fa";
 
 
 const RightSection = () => {
@@ -66,19 +66,20 @@ const RightSection = () => {
 
     return (
         <>
-            <div className={`flex flex-col  border rounded-r-md relative ${"flex-1"}`}>
+            <div className={`flex flex-col  rounded-r-md relative ${"flex-1"}`}>
 
                 {/* Top section */}
-                <div className="border h-[8%] flex flex-col  justify-center">
+                <div className=" h-[8%] bg-[#1f3442] text-white flex flex-col  justify-center">
                     <div className="px-2">
                         {selected?.type === "chats" ?
-                            <div className="flex w-full justify-between px-2"><p>To : <span className="text-red-500">{friend?.fname} {friend?.lname}</span></p> <button className="p-1" onClick={handleCall}><IoCall className="text-[22px]"/></button></div>
+                            <div className="flex w-full justify-between px-2">
+                                <div className="flex gap-3 items-center"> <img className="w-10 border border-cyan-800 rounded-full" src={`https://avatar.iran.liara.run/public/${friend.gender === "MALE" ? "boy" :"girl"}?username=${friend.fname}`} alt="" /> <p className="text-white font-extrabold">{friend?.fname} {friend?.lname}</p></div> <button className="p-1 " onClick={handleCall}><FaVideo className="text-[26px] hover:text-[30px] text-[#508bd8]"/></button></div>
                             : <div  className="flex items-center justify-between">
                                 <div onClick={() => setShowGroupInfo(true)} className="flex w-full items-center gap-2">
-                                    <div className="border rounded-full w-[40px] h-[40px]"></div>
+                                    <div className="border text-center flex items-center justify-center font-extrabold bg-white text-cyan-950 rounded-full w-[40px] h-[40px]">{group?.groupName[0].toUpperCase()}</div>
                                     <div className="flex flex-col">
-                                        <p className="text-red-500">{group?.groupName}</p>
-                                        {selected?.type === "group" && <p className="text-[12px]"> click here for group info</p>}
+                                        <p className="text-white font-extrabold">{group?.groupName}</p>
+                                        {selected?.type === "group" && <p className="text-[12px] text-cyan-300"> click here for group info</p>}
                                     </div>
                                 </div>
                                 {selected?.type === "group" && <p className="cursor-pointer" onClick={() => setShowOptions(prev => !prev)}>{showOptions ? <ImCross /> : <SlOptionsVertical />} </p>}
@@ -99,16 +100,16 @@ const RightSection = () => {
 
                 {/* Chat Section */}
                 <div
-                    className=" h-[82%] p-2 flex flex-col gap-2 overflow-y-auto">
+                    className=" h-[82%] p-2 flex flex-col gap-2 bg-[#0c1317]  overflow-y-auto">
                     {(selected?.type === "chats") ?
                         chats?.map((chat: any, index: number) => {
                             const isSender = chat.senderId === userId;
                             return (
                                 <div ref={lastMessageRef}
                                     key={index}
-                                    className={`border max-w-max rounded-full p-2 text-center ${isSender
-                                        ? "bg-blue-100 self-end text-blue-700"
-                                        : "bg-gray-100 self-start text-gray-700"
+                                    className={` max-w-[50%] rounded-md p-2 text-center ${isSender
+                                        ? "bg-white self-end text-[#2b475f]"
+                                        : "bg-[#223b5d] self-start text-white"
                                         }`}
                                 >
                                     {chat.body}
@@ -121,11 +122,11 @@ const RightSection = () => {
                                     grouChats?.map((chat: any, index: number) => {
                                         const isSender = chat.senderId === userId;
                                         return (
-                                            <div  ref={lastMessageRef} key={index} className={`border max-w-max rounded-full p-2 text-center ${isSender ? "bg-blue-100 self-end text-blue-700" : "bg-gray-100 self-start text-gray-700" }`}>
-                                                <p className="text-[10px] text-red-500">{
+                                            <div  ref={lastMessageRef} key={index} className={`max-w-[50%] rounded-md p-2 ${isSender ? "bg-white self-end text-[#2b475f]" : "bg-[#223b5d] self-start text-white" }`}>
+                                                <p className="text-[10px] font-bold text-cyan-300">{
                                                     friends?.find((f: any) => f.userId === chat.senderId)
                                                         ? `${friends.find((f: any) => f.userId === chat.senderId)?.fname}`
-                                                        : "you"
+                                                        : <span className="text-orange-600">you</span>
                                                 }</p>
                                                 <p>{chat.messageBody}</p>
                                             </div>
@@ -138,9 +139,9 @@ const RightSection = () => {
                 </div>
 
                 {/* bottom section */}
-                <form className="h-[10%] flex w-full border items-center justify-center gap-3" onSubmit={(e) => handleClick(e)}>
-                    <input className="border w-[70%]  p-1 rounded-md" type="text" value={messageBody} onChange={(e) => setMessageBody(e.target.value)} name="message" />
-                    <button type="submit"> <IoSend className="text-[30px]" /> </button>
+                <form className="h-[10%] flex w-full  bg-[#1f3445] items-center justify-center gap-3" onSubmit={(e) => handleClick(e)}>
+                    <input className="border border-[#1f3450]  w-[70%] bg-[#2e4c65] outline-none text-white  p-3 rounded-md" type="text" value={messageBody} onChange={(e) => setMessageBody(e.target.value)} name="message" />
+                    <button type="submit"> <IoSend className="text-[30px] text-[#508bd8]" /> </button>
                 </form>
             </div>
 

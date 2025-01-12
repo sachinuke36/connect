@@ -18,10 +18,9 @@ const Shortcuts = () => {
 
 
   return (
-    <div className="w-[5%]  flex flex-col items-center border rounded-l-md pt-6 justify-between gap-4">
+    <div className="w-[5%] bg-[#1f3445] text-[#8aa4ba]  flex flex-col items-center   pt-6 justify-between gap-4">
       <div className="flex flex-col gap-3 items-center justify-center">
-        <IoMdPerson onClick={() => setShowItems("FRIENDS")} className={`text-[30px] ${showItems === "FRIENDS" ? " border-b-2 border-cyan-600" :""}`} />
-          
+        <IoMdPerson onClick={() => setShowItems("FRIENDS")} className={`text-[30px] ${showItems === "FRIENDS" ? " border-b-2 border-cyan-600" :""}`} />          
         <MdGroups2 onClick={() => {
           setShowItems("GROUPS");
           getGroups()}

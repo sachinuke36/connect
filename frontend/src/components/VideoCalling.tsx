@@ -157,21 +157,21 @@ const Room = ()=>{
 
       
 
-    return(<div className="flex flex-col gap-4" >
+    return(<div className="flex flex-col gap-4 h-[100vh] bg-[#06121c]" >
         <div className="flex  gap-5 mt-10 mx-auto justify-center">
         {/* local video */}
         <div>
-            <video ref = {localVideoRef} controls width={300} height={300} playsInline muted autoPlay></video>
-            <p className="text-center text-2xl font-extrabold">You</p>
+            <video className="border rounded-md" ref = {localVideoRef} controls width={300} height={300} playsInline muted autoPlay></video>
+            <p className="text-center text-white text-2xl font-extrabold">You</p>
         </div>
         {/* remote video */}
         <div>
-            <video ref={remoteVideoRef} playsInline controls  autoPlay></video>
-            <p className="text-center text-2xl font-extrabold">{allUsers?.find((u:any)=>u.userId === calling)?.fname}</p>
+            <video className="border rounded-md" ref={remoteVideoRef} playsInline controls  autoPlay></video>
+            <p className="text-center text-2xl text-white font-extrabold">{allUsers?.find((u:any)=>u.userId === calling)?.fname}</p>
         </div>
 
         </div>
-       {endCall && <button onClick={endCallHandler} className="border p-1 w-[100px] mx-auto rounded-sm bg-red-400 hover:bg-red-700">End-call</button>}
+       {endCall && <button onClick={endCallHandler} className=" p-1 w-[100px] mx-auto rounded-sm bg-red-400 text-red-950 hover:text-white hover:bg-red-700">End-call</button>}
 
     </div>)
 }

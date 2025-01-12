@@ -29,9 +29,9 @@ const IncomingCall = ({from, roomId, setShowCall}:{from: string , roomId:string,
 
 
   return (
-    <div className="z-10 absolute border p-2 rounded-md top-2 right-2 bg-white flex flex-col gap-2 items-center justify-center">
+    <div className="z-10 absolute text-white  p-2 rounded-md top-2 right-2 bg-[#394855] flex flex-col gap-2 items-center justify-center">
       <p>Incomming call from {fname} {lname}</p>
-      <button className="border p-1 rounded-md bg-green-700" onClick={handleAcceptCall}
+      <button className=" p-1 text-green-900 rounded-md bg-green-600" onClick={handleAcceptCall}
       >accept</button>
     </div>
   )

@@ -54,7 +54,7 @@ const App = () => {
   
   
   return (
-    <>
+    <div className="w-full h-full">
       <Routes>
         { !isLoggedIn ? <>
                     <Route path="/login" element={<Login/>}/>
@@ -71,7 +71,7 @@ const App = () => {
       <CreateGroup/>
       {showCall && <IncomingCall  from={from} roomId={roomId} setShowCall={setShowCall} />    }
       <ToastContainer/>
-    </>
+    </div>
   )
 }
 

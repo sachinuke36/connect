@@ -5,7 +5,7 @@ import Shortcuts from "../components/Shortcuts";
 
 const Home = ()=>{
 
-    return (<div className="w-full h-[100vh] border  flex p-4">
+    return (<div className="w-[100vw] h-[100vh]   flex ">
         <Shortcuts/>
         <MiddleSection/>
         <RightSection />
