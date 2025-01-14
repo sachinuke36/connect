@@ -19,6 +19,7 @@ export class Friend{
 
    async sendFriendRequest(req:express.Request, res:express.Response):Promise<any>{
         const { userId:senderId, receiverId } = req.body;
+        if(!senderId || !receiverId) return;
         try {
             const isFriend = await this.isFriend(senderId, receiverId);
             if(isFriend) return res.json({message:"Already friends !"});
@@ -36,6 +37,7 @@ export class Friend{
 
     async acceptRequest(req: express.Request, res: express.Response):Promise<any>{
         const { senderId, userId} = req.body;
+        if(!senderId || !userId) return;
         try {
           
             const friendRequest = await prisma.friendRequest.update({
@@ -54,6 +56,7 @@ export class Friend{
     
     async rejectFriendRequest(req: express.Request, res: express.Response):Promise<any>{
         const { senderId, username } = req.body;
+        if(!senderId || !username) return;
         try {
             const user = await prisma.user.findFirst({where: {username}});
             if(!user) return res.json({message: "No user found !"});
@@ -85,6 +88,7 @@ export class Friend{
 
     async getFriendRequests(req: express.Request, res:express.Response):Promise<any>{
         const { userId } = req.body;
+        if(!userId) return
         try {
             let friendRequests = await prisma.friendRequest.findMany({
                 where: {OR:[{ receiverId : userId},{senderId: userId}],
@@ -99,6 +103,7 @@ export class Friend{
 
     async getFriends(req: express.Request, res: express.Response):Promise<any>{
         const { username } = req.body;
+        if(!username) return;
         const userId = (await getUser(username)).userId;
             try {
                 const friends = await prisma.friendRequest.findMany({

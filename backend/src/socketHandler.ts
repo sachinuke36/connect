@@ -35,7 +35,7 @@ io.on("connection",(socket)=>{
       } else if (userId) {
         userToSocketIdMap[userId] = socket.id;
       }
-
+      io.emit("getOnlineUsers",Object.keys(userToSocketIdMap));
       socketToGroupMap[socket.id] = new Set();
 
       socket.on("joinGroup",(groupId:string)=>{
@@ -56,6 +56,8 @@ io.on("connection",(socket)=>{
         socket.join(roomId);
         io.to(userSocketId).emit("room:join",data);
       })
+
+  
 
       socket.on("offer",({from, to, offer})=>{
         io.to(getReceiverSocketId(to)).emit("offer", {offer, from, to})

@@ -22,7 +22,7 @@ const chatHandler = () => {
             })
             const data = (await res.json()).data;
             socket?.emit("newMessage",{ username, friendId, messageBody })
-            setChats((prev:any)=>[...prev, {senderId:userId, body: messageBody }]);
+            setChats((prev:any)=>[...prev, {senderId:userId, body: messageBody, sent_at: Date.now() }]);
             console.log(data);
         } catch (error) {
             console.log("Error in sendChat",error);

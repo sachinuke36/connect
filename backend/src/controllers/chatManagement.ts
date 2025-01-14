@@ -61,7 +61,7 @@ export class Chat{
                         });
                     // socket connection for message goes here
                     const friendSocketId = getReceiverSocketId(friendId);
-                        this.io.to(friendSocketId).emit("newMessage",{senderId: user.userId, body:messageBody})
+                        this.io.to(friendSocketId).emit("newMessage",{senderId: user.userId, body:messageBody, sent_at: Date.now()})
                 return res.json({message: " Message Sent Successfully !", data: message});
         } catch (error) {
             console.log("Error in sendChat: ",error);

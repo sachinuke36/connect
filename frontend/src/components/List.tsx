@@ -3,8 +3,9 @@ import friendRequestHandler from "../action/friendRequestHandler";
 // import  sendRequest  from "../action/friendRequestHandler";
 import { useAppContext } from "../contexts/Contexts"
 import { MdGroups } from "react-icons/md";
+import { useSocketContext } from "../contexts/SocketContext";
 
-const List = () => {
+const List = ({search}:{search:string}) => {
    
     const {friends, allUsers, showItems, selected, setSelected, friendRequests, groups} = useAppContext();
     const { sendRequest, acceptRequest} = friendRequestHandler()
@@ -16,6 +17,7 @@ const List = () => {
     }
     const List = getList();
     const  userId  = getUser();
+    const {online} = useSocketContext();
 
     const buttonObject : {[id:string]:string} = {};
     notFriends?.forEach((i: any) => {
@@ -34,6 +36,7 @@ const List = () => {
             buttonObject[i.userId] = "Add Friend";
         }
     });
+    console.log("from list",online)
     
     return (
         <>
@@ -47,10 +50,11 @@ const List = () => {
                         </div>
                     </div>
                 ) : (
-                    List?.map((i: any) =>
+                    List?.filter((item:any)=>item?.fname.toLowerCase().includes(search.toLowerCase())).map((i: any) =>
                         <div className={`flex w-full py-2 border border-x-0 border-[#1f3445] flex-col  ${(selected?.id === i.userId) ? "bg-[#1f3445]  text-white" : null}`} onClick={() => setSelected({type:"chats", id:i.userId})} key={i.username}>
                             <div className="flex px-2 items-center gap-3">
-                                <div className="rounded-[50%] border bg-white h-[30px] w-[30px]">
+                                <div className=" relative rounded-[50%] border bg-white h-[30px] w-[30px]">
+                                    {online?.includes(i?.userId) && (<div className="w-[7px] h-[7px] absolute right-[-3px] rounded-full top-1 bg-orange-600"></div>)}
                                     <img loading="lazy" src={`https://avatar.iran.liara.run/public/${i.gender === "MALE" ? "boy" :"girl"}?username=${i.fname}`} alt="" />
                                 </div>
                                 <div>{i.fname} {i.lname}</div>

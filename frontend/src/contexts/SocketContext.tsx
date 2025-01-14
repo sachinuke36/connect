@@ -12,7 +12,8 @@ export const useSocketContext = () => useContext(SocketContext);
 
 export const SocketContextProvider = ({children}:{children: ReactNode})=>{
     const [socket, setSocket] = useState<Socket | null>(null);
-    const [calling, setCalling] = useState<string | null>(null)
+    const [calling, setCalling] = useState<string | null>(null);
+    const [online, setOnline] = useState<string | null>(null);
     const userId = getUser();
     const {setFriendRequests, allUsers, setFriends,selected, getAllUsers, setChats, setGroupChats, setGroups} = useAppContext()
 
@@ -50,22 +51,26 @@ export const SocketContextProvider = ({children}:{children: ReactNode})=>{
             });
 
             // messaging goes here
-            socket.on("newMessage",({body, senderId})=>{
+            socket.on("newMessage",({body, senderId, sent_at})=>{
                 setChats((prev: any) => {
-                    return [...prev, { senderId, body }];
+                    return [...prev, { senderId, body, sent_at }];
                 });
                 toast.info("message recieved" ,{position: 'top-right'});
                 console.log("message recieved")
             })
 
-            socket.on("newGroupMessage",({groupId, senderId, messageBody})=>{
-                setGroupChats((prev:any)=>[...prev, {groupId, senderId, messageBody}])
+            socket.on("newGroupMessage",({groupId, senderId, messageBody, sent_at})=>{
+                setGroupChats((prev:any)=>[...prev, {groupId, senderId, messageBody, sent_at}])
             })
 
             socket.on("createGroup",({message, data})=>{
                 console.log(data);
                 toast.success(message,{position:"top-right"});
                 setGroups((prev:any[])=>[...prev, data]);
+            });
+
+            socket.on("getOnlineUsers", (data)=>{
+                setOnline(data);
             })
 
 
@@ -76,6 +81,7 @@ export const SocketContextProvider = ({children}:{children: ReactNode})=>{
                 socket?.off("newMessage");
                 socket?.off("newGroupMessage");
                 socket?.off("createGroup");
+                socket?.off("getOnlineUsers");
                 socket?.disconnect();
                 setSocket(null);
             }
@@ -91,7 +97,7 @@ export const SocketContextProvider = ({children}:{children: ReactNode})=>{
 
 
     return (<SocketContext.Provider value={{
-        socket, setSocket, calling, setCalling
+        socket, setSocket, calling, setCalling, online
     }} >
             {children}
     </SocketContext.Provider>)

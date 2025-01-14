@@ -24,6 +24,12 @@ enum FriendRequestStatus {
   REJECTED
 }
 
+enum MessageStatus {
+  SENT
+  DELIVERED
+  SEEN
+}
+
 model User{
   userId String @id @default(uuid())
   fname String
@@ -81,6 +87,8 @@ model Message{
   sender User @relation(fields: [senderId], references: [userId])
 
   body String
+  status MessageStatus @default(SENT)
+  sent_at DateTime @default(now())
 }
 
 model Group{

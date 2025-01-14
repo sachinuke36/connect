@@ -18,10 +18,8 @@ export class Group{
 
     async createGroup(req: express.Request, res: express.Response):Promise<any>{
         let { userId : adminId , membersIds, groupName, groupDescription} = req.body;
-        // const users = await getAllUsers();
-        // let membersIds = users.filter((u)=>members.includes(u.username)).map((u)=>u.userId)
+        if(!adminId || !membersIds || !groupName) return;
         if(!Array.isArray(membersIds)) return res.json({error: "Invalid request"});
-        // const adminId = (await getUser(username)).userId;
         membersIds.push(adminId);
         try {
             const response = await prisma.group.create({
@@ -45,6 +43,7 @@ export class Group{
 
     async getGroup(req: express.Request, res: express.Response):Promise<any>{
         const { userId } = req.body;
+        if(!userId) return;
         try {
         const users = await getAllUsers();
         const groups = await prisma.group.findMany({where: {membersIds: {has: userId}}});
@@ -57,6 +56,7 @@ export class Group{
     }
 
     async getGroupMembers(groupId:string):Promise<Partial<User>[]>{
+        if(!groupId) return;
         try {
             const users = await getAllUsers();
             const group = await prisma.group.findFirst({where: {groupId}});
@@ -114,6 +114,7 @@ export class Group{
 
     async updateGroup(req: express.Request, res: express.Response):Promise<any>{
         const {userId, groupId, groupName, description, membersIds} = req.body;
+        if(!userId || !groupId) return;
         try {
             let group = await prisma.group.findUnique({where:{groupId}});
             if(!group) return res.status(404).json({error: "Group not found!"});

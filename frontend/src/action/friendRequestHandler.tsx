@@ -9,7 +9,7 @@ const {socket} = useSocketContext()
 const userId = getUser();
 
  const sendRequest = useCallback(async(receiverId : string)=>{
-    if(!receiverId) return;
+    if(!receiverId || !userId) return;
     try {
         const res = await fetch(  BACKEND_URL+ "/api/addFriend", {
             method : "POST",

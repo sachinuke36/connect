@@ -11,6 +11,7 @@ import GroupInfo from "./GroupInfo";
 import { useNavigate } from "react-router-dom";
 import { useSocketContext } from "../contexts/SocketContext";
 import { FaVideo } from "react-icons/fa";
+import { getTime } from "../constants/formatTimeDate";
 
 
 const RightSection = () => {
@@ -59,7 +60,7 @@ const RightSection = () => {
 
     useEffect(()=>{
         setTimeout(()=>{
-            lastMessageRef.current?.scrollIntoView({behavior: "smooth"})
+            lastMessageRef.current?.scrollIntoView({behavior: "smooth"});
         },100)
     },[chats, grouChats])
 
@@ -73,7 +74,7 @@ const RightSection = () => {
                     <div className="px-2">
                         {selected?.type === "chats" ?
                             <div className="flex w-full justify-between px-2">
-                                <div className="flex gap-3 items-center"> <img className="w-10 border border-cyan-800 rounded-full" src={`https://avatar.iran.liara.run/public/${friend.gender === "MALE" ? "boy" :"girl"}?username=${friend.fname}`} alt="" /> <p className="text-white font-extrabold">{friend?.fname} {friend?.lname}</p></div> <button className="p-1 " onClick={handleCall}><FaVideo className="text-[26px] hover:text-[30px] text-[#508bd8]"/></button></div>
+                                <div className="flex gap-3 items-center"> <img className="w-10 border border-cyan-800 rounded-full" src={`https://avatar.iran.liara.run/public/${friend?.gender === "MALE" ? "boy" :"girl"}?username=${friend?.fname}`} alt="" /> <p className="text-white font-extrabold">{friend?.fname} {friend?.lname}</p></div> <button className="p-1 " onClick={handleCall}><FaVideo className="text-[26px] hover:text-[30px] text-[#508bd8]"/></button></div>
                             : <div  className="flex items-center justify-between">
                                 <div onClick={() => setShowGroupInfo(true)} className="flex w-full items-center gap-2">
                                     <div className="border text-center flex items-center justify-center font-extrabold bg-white text-cyan-950 rounded-full w-[40px] h-[40px]">{group?.groupName[0].toUpperCase()}</div>
@@ -104,6 +105,8 @@ const RightSection = () => {
                     {(selected?.type === "chats") ?
                         chats?.map((chat: any, index: number) => {
                             const isSender = chat.senderId === userId;
+                            const timeAgo = getTime(new Date(chat?.sent_at))?.timeAgo
+
                             return (
                                 <div ref={lastMessageRef}
                                     key={index}
@@ -112,7 +115,8 @@ const RightSection = () => {
                                         : "bg-[#223b5d] self-start text-white"
                                         }`}
                                 >
-                                    {chat.body}
+                                    <p>{chat.body}</p>
+                                    <p className={`text-[9px] ${isSender ? "text-green-700" :"text-green-500" }`}>{timeAgo}</p>
                                 </div>
                             );
                         }) : (
@@ -121,6 +125,7 @@ const RightSection = () => {
                                 {
                                     grouChats?.map((chat: any, index: number) => {
                                         const isSender = chat.senderId === userId;
+                                        const timeAgo = getTime(new Date(chat?.sent_at)).timeAgo
                                         return (
                                             <div  ref={lastMessageRef} key={index} className={`max-w-[50%] rounded-md p-2 ${isSender ? "bg-white self-end text-[#2b475f]" : "bg-[#223b5d] self-start text-white" }`}>
                                                 <p className="text-[10px] font-bold text-cyan-300">{
@@ -129,6 +134,7 @@ const RightSection = () => {
                                                         : <span className="text-orange-600">you</span>
                                                 }</p>
                                                 <p>{chat.messageBody}</p>
+                                                <p className={`text-[9px] ${isSender ? "text-green-700" :"text-green-500" }`}>{timeAgo}</p>
                                             </div>
                                         );
                                     })

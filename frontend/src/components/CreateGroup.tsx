@@ -71,8 +71,14 @@ const CreateGroup = () => {
                             <button onClick={() => {
                                 if (updateGroup) {
                                     GroupUpdate(selectedFriends, groupname!, groupDescription!);
+                                    setGroupDescription("");
+                                    setGroupName("");
+                                    setSelectedFriends([])
                                 } else {
                                     createGroup(selectedFriends, groupname!, groupDescription!);
+                                    setGroupDescription("");
+                                    setGroupName("");
+                                    setSelectedFriends([]);
                                 }
                                 closeModal();
                                 setUpdateGroup(false)

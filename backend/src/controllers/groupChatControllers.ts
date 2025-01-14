@@ -11,6 +11,7 @@ export class groupChat{
 
     async sendGroupChat(req: express.Request, res: express.Response):Promise<any>{
         const { groupId, senderId,messageBody } = req.body;
+        if(!groupId || !senderId || !messageBody) return;
         try {
             const response = await prisma.groupChat.create({data:{
                 groupId,
@@ -22,6 +23,7 @@ export class groupChat{
                 groupId,
                 senderId,
                 messageBody,
+                sent_at : Date.now()
             });
 
             return res.status(200).json({message:"message sent successfully!", data: response})
@@ -33,6 +35,7 @@ export class groupChat{
 
     async getGroupChats(req: express.Request, res: express.Response):Promise<any>{
         const {groupId} = req.body;
+        if(!groupId) return;
         try {
             const groupChats = await prisma.groupChat.findMany({where: {groupId}});
             return res.json({message:" groupChats fetched successfully!", data: groupChats});
