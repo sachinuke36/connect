@@ -28,3 +28,19 @@ This is a real-time chatting and video calling app built using **Prisma**, **Exp
 ```bash
 git clone <repository_url>
 cd <project_directory>
+```
+
+```bash
+cd backend
+npm install
+```
+
+```bash
+cd frontend
+npm install
+```
+### 2. .env
+```bash
+DATABASE_URL=your_database_url
+JWT_SECRET=your_jwt_secret
+```
