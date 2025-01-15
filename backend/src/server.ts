@@ -13,7 +13,7 @@ app.use(cors({
   origin: origin,           // Allow only this specific origin
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow these HTTP methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Allow these headers
-  credentials: true,        // Allow credentials (cookies, etc.)
+  credentials: true,
 }));
 app.options('*', cors());
 
