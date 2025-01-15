@@ -7,16 +7,17 @@ const express_1 = __importDefault(require("express"));
 const router_1 = __importDefault(require("./routes/router"));
 const cors_1 = __importDefault(require("cors"));
 const socketHandler_1 = require("./socketHandler");
-const origin = "http://localhost:5173";
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+// const origin = process.env.NODE_ENV =="development" ?  "http://localhost:5173" : "https://connect-chat-app-pern.netlify.app"
 const PORT = process.env.PORT || 8000;
 //middlewares
 socketHandler_1.app.use((0, cors_1.default)({
-    origin: origin, // Allow only this specific origin
+    origin: '*', // Allow only this specific origin
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow these HTTP methods
     allowedHeaders: ['Content-Type', 'Authorization'], // Allow these headers
     credentials: true,
 }));
-// app.options('*', cors());
 socketHandler_1.app.use(express_1.default.json());
 socketHandler_1.app.use(express_1.default.urlencoded({ extended: true }));
 // app.get("/",(req:express.Request,res:express.Response)=>{
