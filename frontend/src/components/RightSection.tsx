@@ -39,7 +39,7 @@ const RightSection = () => {
 
     const handleCall = useCallback(()=>{
         const roomId = crypto.randomUUID();
-        socket.emit("room:join",{to : selected?.id, from: userId, roomId });
+        socket?.emit("room:join",{to : selected?.id, from: userId, roomId });
     },[socket, selected]);
 
     const handleRoomJoin = useCallback((data : {to:string, from:string, roomId:string})=>{
@@ -47,7 +47,7 @@ const RightSection = () => {
     },[])
 
     useEffect(()=>{
-        socket.on("room:join",(data: any)=>{
+        socket?.on("room:join",(data: any)=>{
             handleRoomJoin(data)
         })
         return (()=> socket?.off("room:join"))
