@@ -9,7 +9,14 @@ const origin = "http://localhost:5173"
 const PORT = process.env.PORT || 8000;
 
 //middlewares
-app.use(cors())
+app.use(cors({
+  origin: origin,           // Allow only this specific origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow these HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allow these headers
+  credentials: true,        // Allow credentials (cookies, etc.)
+}));
+app.options('*', cors());
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
