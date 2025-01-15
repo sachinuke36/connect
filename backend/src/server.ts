@@ -23,9 +23,9 @@ app.get("/",(req:express.Request,res:express.Response)=>{
 app.use('/api',router());
 
 
-// server.listen(PORT,()=>{
-//   console.log("Server is running on : " + PORT )
-// })
+server.listen(PORT,()=>{
+  console.log("Server is running on : " + PORT )
+})
 
 
 
