@@ -111,32 +111,32 @@
 // // }
 
 
-// {
-//   "compilerOptions": {
-//     "module": "NodeNext",
-//     "moduleResolution": "node16",
-//     "baseUrl": "src",
-//     "outDir": "dist",
-//     "sourceMap": true,
-//     "noImplicitAny": true
-//   },
-//   "include": ["src/**/*"]
-// }
-
-
 {
   "compilerOptions": {
-    "target": "es2020",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "outDir": "./dist",
+    "module": "NodeNext",
+    "moduleResolution": "node16",
+    "baseUrl": "src",
+    "outDir": "dist",
     "sourceMap": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "baseUrl": "./src",
-    "types": ["node"]
+    "noImplicitAny": true
   },
   "include": ["src/**/*"]
 }
+
+
+// {
+//   "compilerOptions": {
+//     "target": "es2020",
+//     "module": "commonjs",
+//     "moduleResolution": "node",
+//     "esModuleInterop": true,
+//     "skipLibCheck": true,
+//     "outDir": "./dist",
+//     "sourceMap": true,
+//     "strict": true,
+//     "forceConsistentCasingInFileNames": true,
+//     "baseUrl": "./src",
+//     "types": ["node"]
+//   },
+//   "include": ["src/**/*"]
+// }
