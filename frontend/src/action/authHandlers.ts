@@ -19,7 +19,6 @@ export const useLogin = ()=>{
            const res = await fetch(BACKEND_URL+"/api/login",{
             method: "POST",
             headers: { "Content-Type": "application/json"},
-            mode: 'no-cors',
             credentials : "include",
             body: JSON.stringify(loginData.payload)
            })

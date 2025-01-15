@@ -144,7 +144,7 @@ export interface User{
           return  res.status(200).cookie("authToken", token, {
             httpOnly: false, 
             secure: process.env.NODE_ENV === "production", 
-            sameSite: "none", 
+            sameSite: "strict", 
             maxAge: 1000 * 60 * 60 * 24, 
           }).json({data: u, success:true});
     }

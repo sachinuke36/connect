@@ -14,7 +14,7 @@ const server = (0, node_http_1.createServer)(app);
 exports.server = server;
 const io = new socket_io_1.Server(server, {
     cors: {
-        origin: origin,
+        origin: "*",
         credentials: true,
         methods: ["GET", "POST"]
     }

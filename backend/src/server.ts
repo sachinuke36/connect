@@ -10,20 +10,19 @@ const PORT = process.env.PORT || 8000;
 
 //middlewares
 app.use(cors({
-  origin: "*",           // Allow only this specific origin
+  origin: origin,           // Allow only this specific origin
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow these HTTP methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Allow these headers
   credentials: true,
 }));
-app.options('*', cors());
 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/",(req:express.Request,res:express.Response)=>{
-  res.send("<h1>Hii</h1>")
-})
+// app.get("/",(req:express.Request,res:express.Response)=>{
+//   res.send("<h1>Hii</h1>")
+// })
 app.use('/api',router());
 
 
