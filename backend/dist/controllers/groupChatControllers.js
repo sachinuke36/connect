@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.groupChat = void 0;
 const db_config_1 = require("../db/db.config");
 class groupChat {
-    io;
     constructor(io) {
         this.io = io;
         this.sendGroupChat = this.sendGroupChat.bind(this);

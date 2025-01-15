@@ -5,8 +5,6 @@ const db_config_1 = require("../db/db.config");
 const authControllers_1 = require("./authControllers");
 const socketHandler_1 = require("../socketHandler");
 class Chat {
-    chats;
-    io;
     constructor(io) {
         this.chats = [];
         this.io = io;

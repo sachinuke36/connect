@@ -5,7 +5,6 @@ const authControllers_1 = require("./authControllers");
 const db_config_1 = require("../db/db.config");
 const socketHandler_1 = require("../socketHandler");
 class Group {
-    io;
     constructor(io) {
         this.io = io;
         this.createGroup = this.createGroup.bind(this);

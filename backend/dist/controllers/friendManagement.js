@@ -5,7 +5,6 @@ const db_config_1 = require("../db/db.config");
 const authControllers_1 = require("./authControllers");
 const socketHandler_1 = require("../socketHandler");
 class Friend {
-    io;
     constructor(io) {
         this.io = io;
         this.sendFriendRequest = this.sendFriendRequest.bind(this);

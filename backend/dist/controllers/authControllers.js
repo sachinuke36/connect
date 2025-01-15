@@ -156,7 +156,7 @@ async function setCookies(user, res) {
     return res.status(200).cookie("authToken", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV !== "development",
-        sameSite: 'none',
+        sameSite: 'strict',
         maxAge: 1000 * 60 * 60 * 24,
     }).json({ data: u, success: true });
 }
