@@ -88,7 +88,7 @@ export class Friend{
 
     async getFriendRequests(req: express.Request, res:express.Response):Promise<any>{
         const { userId } = req.body;
-        if(!userId) return
+        if(!userId) return;
         try {
             let friendRequests = await prisma.friendRequest.findMany({
                 where: {OR:[{ receiverId : userId},{senderId: userId}],
@@ -104,7 +104,8 @@ export class Friend{
     async getFriends(req: express.Request, res: express.Response):Promise<any>{
         const { username } = req.body;
         if(!username) return;
-        const userId = (await getUser(username)).userId;
+        const userId = (await getUser(username))?.userId;
+        if(!userId) return;
             try {
                 const friends = await prisma.friendRequest.findMany({
                 where: { OR : [{senderId : userId}, {receiverId: userId}],
@@ -114,7 +115,8 @@ export class Friend{
                     else return i.receiverId;
                 });
                 const allusers = await getAllUsers();
-                const friendNames = allusers.filter((u)=>friendsIds.includes(u.userId))
+                if(!allusers) return;
+                const friendNames = allusers.filter((u)=>friendsIds.includes(u.userId!))
                 return res.json({messsage: "friendslists fetched successfully!", data: friendNames})
             } catch (error) {
                 console.log("Error in getFriends", error);

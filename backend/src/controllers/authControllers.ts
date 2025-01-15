@@ -80,7 +80,7 @@ export interface User{
         await prisma.user.deleteMany({});
     }
 
-    export async function getUser(username:string, userId?:string):Promise<Partial<User>>{
+    export async function getUser(username:string, userId?:string):Promise<Partial<User>|null>{
        if(!userId) {
         const user = await prisma.user.findFirst({where: { username},select:{
             fname: true,
@@ -90,6 +90,7 @@ export interface User{
             password : false,
             userId: true
         }});
+        if(!user) return null;
         return user
         }
        else {

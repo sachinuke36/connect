@@ -18,14 +18,15 @@ export class Chat{
         this.getConversationsOfUser = this.getConversationsOfUser.bind(this);
     }
    async createConversation(user : Partial<User>, friendId:string){
+    if(!user) return;
     try {
             let conversation = await prisma.conversation.findFirst({where: {
-                participantIds: { hasEvery : [user.userId, friendId]}
+                participantIds: { hasEvery : [user.userId!, friendId]}
             }})
         
             if(!conversation){
                 conversation = await prisma.conversation.create({data:{
-                    participantIds: [user.userId,friendId],
+                    participantIds: [user.userId!,friendId],
                     participants: { connect: [{ userId: user.userId }, { userId: friendId }] }
                 }})
             }
@@ -39,7 +40,7 @@ export class Chat{
         let conversation = await prisma.conversation.findMany({
             where: {
                 participantIds : {
-                    hasSome : [user.userId]
+                    hasSome : [user.userId!]
                 }
             }
         });
@@ -50,13 +51,14 @@ export class Chat{
         const { username, friendId, messageBody } = req.body;
         // const friendId = (await getUser(friendUsername)).userId
         try {
-                const user = await getUser(username)
+                const user = await getUser(username);
+                if(!user) return;
                 const conversation = await this.createConversation(user,friendId);
                 const message = await prisma.message.create({
                             data: {
-                                conversationId : conversation.conversationId,
-                                senderId : user.userId,
-                                body : messageBody
+                                conversationId : conversation?.conversationId!,
+                                senderId : user.userId!,
+                                body : messageBody!
                             }
                         });
                     // socket connection for message goes here
@@ -75,7 +77,8 @@ export class Chat{
         if(!friendId || !username) return res.json({error: "Provide all details"})
         // const friendId = (await getUser(friendUserId)).userId
         const user = await getUser(username);
-        const conversationId = (await this.createConversation(user, friendId)).conversationId;
+        if(!user) return;
+        const conversationId = (await this.createConversation(user, friendId))?.conversationId;
         this.chats = await prisma.message.findMany({
             where: {conversationId}
         });
@@ -86,6 +89,7 @@ export class Chat{
         const { username } = req.body;
         try {
             const user = await getUser(username);
+            if(!user) return
             const users = await getAllUsers();
             const conversationIds = (await this.getConversationsOfUser(user)).map((i)=>i.conversationId) // where user is involved
             const messages = await prisma.message.findMany({

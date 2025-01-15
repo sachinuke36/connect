@@ -55,12 +55,12 @@ export class Group{
         }   
     }
 
-    async getGroupMembers(groupId:string):Promise<Partial<User>[]>{
-        if(!groupId) return;
+    async getGroupMembers(groupId:string):Promise<Partial<User>[] | null>{
+        if(!groupId) return null;
         try {
             const users = await getAllUsers();
             const group = await prisma.group.findFirst({where: {groupId}});
-            const groupMembers = users.filter(u=> group.membersIds.includes(u.userId));
+            const groupMembers = users.filter(u=> group?.membersIds.includes(u.userId!));
             return groupMembers;
         } catch (error) {
             console.log("Error in getGroupMembers", error);
@@ -92,6 +92,7 @@ export class Group{
         if(!userId || !groupId) return res.json({error:"Missing fields"});
         try {
             const group = await prisma.group.findUnique({where: {groupId}});
+            if(!group) return;
             // if(group || group.membersIds.find((id)=>id === userId)) return res.json({error: "Invalid input"});
             if(group.createdBy === userId){
                 const response = await prisma.group.delete({where:{groupId}});
