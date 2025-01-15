@@ -31,7 +31,7 @@ export const SocketContextProvider = ({children}:{children: ReactNode})=>{
             setSocket(socket);
 
             // friend request sending
-            socket.on("friend-request-sent", async({ senderId, receiverId }) => {
+            socket?.on("friend-request-sent", async({ senderId, receiverId }) => {
                 setFriendRequests((prev : any)=>[...prev, {senderId, receiverId}]);
                 if (!allUsers) await getAllUsers(); 
                 const sender = allUsers?.find((u:any)=>u.userId === senderId)
@@ -40,7 +40,7 @@ export const SocketContextProvider = ({children}:{children: ReactNode})=>{
             });
 
             // accepting friend request
-            socket.on("friend-request-accepted",async({message, userId: friendId})=>{
+            socket?.on("friend-request-accepted",async({message, userId: friendId})=>{
                 if (!allUsers) await getAllUsers(); 
                 const friend = allUsers?.find((u:any)=> u.userId === friendId);
                 toast.success(`${friend.fname} ${friend.lname} accepted your friend request`, { position:"top-right"})
@@ -53,7 +53,7 @@ export const SocketContextProvider = ({children}:{children: ReactNode})=>{
             });
 
             // messaging goes here
-            socket.on("newMessage",({body, senderId, sent_at})=>{
+            socket?.on("newMessage",({body, senderId, sent_at})=>{
                 setChats((prev: any) => {
                     return [...prev, { senderId, body, sent_at }];
                 });
@@ -61,17 +61,17 @@ export const SocketContextProvider = ({children}:{children: ReactNode})=>{
                 console.log("message recieved")
             })
 
-            socket.on("newGroupMessage",({groupId, senderId, messageBody, sent_at})=>{
+            socket?.on("newGroupMessage",({groupId, senderId, messageBody, sent_at})=>{
                 setGroupChats((prev:any)=>[...prev, {groupId, senderId, messageBody, sent_at}])
             })
 
-            socket.on("createGroup",({message, data})=>{
+            socket?.on("createGroup",({message, data})=>{
                 console.log(data);
                 toast.success(message,{position:"top-right"});
                 setGroups((prev:any[])=>[...prev, data]);
             });
 
-            socket.on("getOnlineUsers", (data)=>{
+            socket?.on("getOnlineUsers", (data)=>{
                 setOnline(data);
             })
 
@@ -92,7 +92,7 @@ export const SocketContextProvider = ({children}:{children: ReactNode})=>{
 
         useEffect(() => {
             if (socket && selected?.type === "group") {
-                socket.emit("joinGroup", selected.id);
+                socket?.emit("joinGroup", selected.id);
                 // console.log(`Joined group with ID: ${selected.id}`);
             }
         }, [socket, selected]);

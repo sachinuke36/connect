@@ -23,8 +23,8 @@ export const useLogin = ()=>{
             body: JSON.stringify(loginData.payload)
            })
            const data = await res.json();
-           console.log(data);
-           if(data.success){
+           console?.log(data);
+           if(data?.success){
             setIsLoggedIn(true);
             localStorage.setItem("user",JSON.stringify(data.data));
             navigate("/");
@@ -64,7 +64,7 @@ export const useRegistration = ()=>{
                 body: JSON.stringify(registrationData.payload)
                })
                const data = await res.json();
-               if(data.success){
+               if(data?.success){
                 setIsLoggedIn(true);
                 localStorage.setItem("user",JSON.stringify(data.data));
                 navigate("/");
