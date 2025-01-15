@@ -16,15 +16,16 @@ app.use(cors({origin: origin,
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/api',router());
 
 app.get("/",(req:express.Request,res:express.Response)=>{
   res.send("<h1>Hii</h1>")
 })
+app.use('/api',router());
 
-server.listen(PORT,()=>{
-  console.log("Server is running on : " + PORT )
-})
+
+// server.listen(PORT,()=>{
+//   console.log("Server is running on : " + PORT )
+// })
 
 
 
