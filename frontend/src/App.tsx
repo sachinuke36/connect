@@ -1,21 +1,19 @@
-import { Route, Routes, useNavigate } from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
 import Home from "./pages/Home"
 import Login from "./pages/Login"
 import { getCookies, useAuth } from "./contexts/AuthContexts"
 import { useCallback, useEffect, useState } from "react"
 import CreateGroup from "./components/CreateGroup"
 // import Login from "./pages/Login"
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import Room from "./components/VideoCalling"
 import { useSocketContext } from "./contexts/SocketContext"
 import IncomingCall from "./components/IncomingCall"
-import { getUser } from "./action/authHandlers"
 
 
 const App = () => {
   const { isLoggedIn, setIsLoggedIn} = useAuth();
-  const {calling, setCalling} = useSocketContext();
-  const userId = getUser()
+  const { setCalling} = useSocketContext();
   const cookies = getCookies();
   console.log(cookies)
   const {socket} = useSocketContext();

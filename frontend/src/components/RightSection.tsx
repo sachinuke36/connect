@@ -15,7 +15,7 @@ import { getTime } from "../constants/formatTimeDate";
 
 
 const RightSection = () => {
-    const { friends, chats, selected, setSelected, BACKEND_URL, grouChats, groups, showGroupInfo, setShowGroupInfo, setUpdateGroup, openModal, setGroupChats } = useAppContext();
+    const { friends, chats, selected, setSelected, BACKEND_URL, grouChats, groups, showGroupInfo, setShowGroupInfo, setUpdateGroup, openModal } = useAppContext();
     const { sendGroupChat } = GroupChatHandler();
     const { leaveGroup } = GroupHandler();
     const {sendChat} = chatHandler();

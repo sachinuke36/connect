@@ -5,7 +5,7 @@ const GroupInfo = () => {
  const { allUsers , selected, groups, setShowGroupInfo} = useAppContext();
  const groupMembers = groups?.find((g:any)=>g.groupId === selected?.id)?.membersIds.map((id:string)=>allUsers.find((f: any)=>f.userId === id))?.filter((member:any)=>member)
  const adminId = groups?.find((g:any)=> g.groupId === selected?.id)?.createdBy;
- const admin = allUsers?.find((u:any)=>u.userId === adminId)
+//  const admin = allUsers?.find((u:any)=>u.userId === adminId)
 
   return (
     <div className='flex  sm:w-full bg-[#122532] text-white h-full flex-col py-3 items-center  gap-4'>

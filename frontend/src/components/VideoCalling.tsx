@@ -3,16 +3,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useSocketContext } from "../contexts/SocketContext";
 import { useAppContext } from "../contexts/Contexts";
 import { getUser } from "../action/authHandlers";
-import { useNavigate } from "react-router-dom";
 
 
 
 
 const Room = ()=>{
-    const {socket,calling ,setCalling} = useSocketContext();
+    const {socket,calling } = useSocketContext();
     const {selected, allUsers} = useAppContext();
     const userId = getUser();
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     let localStream :any = null;
     let callInfo : string[] = [];
     const localVideoRef = useRef<HTMLVideoElement | null >(null);
@@ -122,7 +121,7 @@ const Room = ()=>{
         socket?.on("end-call",()=>{
             setEndCall(true);
         });
-        socket?.on("call-ended",(callInfo : string[])=>{
+        socket?.on("call-ended",()=>{
             endCallHandler();
             
         })
