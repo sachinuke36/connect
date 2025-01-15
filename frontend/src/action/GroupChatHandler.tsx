@@ -4,7 +4,7 @@ import { getUser } from "./authHandlers";
 import { useSocketContext } from "../contexts/SocketContext";
 
 const GroupChatHandler = () => {
-    const {BACKEND_URL, selected, setSelected, setGroupChats} = useAppContext();
+    const {BACKEND_URL, selected, setSelected} = useAppContext();
     const {socket} = useSocketContext()
     
     const getGroupChats = useCallback(async()=>{
