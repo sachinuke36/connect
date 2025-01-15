@@ -8,10 +8,10 @@ const GroupInfo = () => {
  const admin = allUsers?.find((u:any)=>u.userId === adminId)
 
   return (
-    <div className='flex bg-[#122532] text-white h-full flex-col py-3 items-center  gap-4'>
+    <div className='flex  sm:w-full bg-[#122532] text-white h-full flex-col py-3 items-center  gap-4'>
       <div onClick={()=>setShowGroupInfo(false)} className='flex items-center gap-3  w-full pl-3 cursor-pointer'><RxCross1 className='text-[25px]'/> <p>Group Info</p></div>
         {/* Image */}
-        <div className=' rounded-full flex items-center justify-center font-extrabold text-[46px] text-white bg-[#4487b3] w-[200px] h-[200px]'>{groups?.find((g:any)=>g.groupId === selected?.id).groupName[0].toUpperCase()}</div>
+        <div className=' rounded-full flex items-center justify-center font-extrabold text-[20px] sm:text-[46px] text-white bg-[#4487b3] w-[100px] h-[100px] sm:w-[200px] sm:h-[200px]'>{groups?.find((g:any)=>g?.groupId === selected?.id)?.groupName[0].toUpperCase()}</div>
         {/* Description */}
         <div className=' text-cyan-400 '>{groups?.find((g:any)=> g.groupId === selected?.id)?.groupName}</div>
         <div>
@@ -21,7 +21,7 @@ const GroupInfo = () => {
         {/* members list */}
         <div className='flex flex-col gap-3 w-full px-5'>
           <h1 className='font-extrabold f'>Group Members</h1>
-            <div className=' max-h-[440px] overflow-y-scroll'>
+            <div className='max-h-[440px] overflow-y-scroll'>
               {
               groupMembers?.sort((a: any, b: any) => {
                 if (a.userId === adminId && b.userId !== adminId) return -1;

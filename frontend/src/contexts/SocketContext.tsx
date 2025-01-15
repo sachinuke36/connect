@@ -15,13 +15,15 @@ export const SocketContextProvider = ({children}:{children: ReactNode})=>{
     const [calling, setCalling] = useState<string | null>(null);
     const [online, setOnline] = useState<string | null>(null);
     const userId = getUser();
+    const BACKEND_URL = import.meta.env.VITE_REACT_APP_BACKEND_BASEURL;
+
     const {setFriendRequests, allUsers, setFriends,selected, getAllUsers, setChats, setGroupChats, setGroups} = useAppContext()
 
         useEffect(()=>{
 
             //socket connection
             if(userId){
-                const socket = io("http://localhost:8000",{
+                const socket = io(BACKEND_URL,{
                     query : {
                         userId : userId
                     }

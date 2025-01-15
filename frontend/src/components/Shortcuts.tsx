@@ -7,19 +7,23 @@ import { useAppContext } from "../contexts/Contexts";
 import friendRequestHandler from "../action/friendRequestHandler";
 import { MdOutlineGroupAdd } from "react-icons/md";
 import GroupHandler from "../action/GroupHandler";
+import { useEffect } from "react";
 
 
 const Shortcuts = () => {
 
-  const { setShowItems, openModal, showItems } = useAppContext();
+  const { setShowItems, openModal, showItems, setShowGroupInfo } = useAppContext();
   const { getFriendRequest } = friendRequestHandler();
-  const {getGroups} = GroupHandler()
+  const {getGroups} = GroupHandler();
+  useEffect(()=>{
+    setShowGroupInfo(false);
+  },[showItems])
   
 
 
   return (
-    <div className="w-[5%] bg-[#1f3445] text-[#8aa4ba]  flex flex-col items-center   pt-6 justify-between gap-4">
-      <div className="flex flex-col gap-3 items-center justify-center">
+    <div className="w-full absolute sm:relative bottom-0  h-[50px] sm:h-full flex sm:w-[5%]  sm:flex bg-[#1f3445] text-[#8aa4ba]   sm:flex-col items-center   sm:pt-6 justify-evenly pr-5 sm:pr-0 sm:justify-between sm:gap-4">
+      <div className="flex w-full justify-evenly sm:flex-col gap-3 items-center sm:justify-center">
         <IoMdPerson onClick={() => setShowItems("FRIENDS")} className={`text-[30px] cursor-pointer ${showItems === "FRIENDS" ? " border-b-2 border-cyan-600" :""}`} />          
         <MdGroups2 onClick={() => {
           setShowItems("GROUPS");

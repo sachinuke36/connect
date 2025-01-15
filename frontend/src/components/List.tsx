@@ -36,20 +36,20 @@ const List = ({search}:{search:string}) => {
             buttonObject[i.userId] = "Add Friend";
         }
     });
-    console.log("from list",online)
-    
     return (
         <>
             {
                 (showItems === "GROUPS") ?
+               ( groups?.length === 0 && showItems==="GROUPS") ? <div className="text-center pt-3">No groups found</div>:
                 groups?.map((i: any, k:any) =>
-                    <div className={`flex w-full py-2 border border-x-0 border-[#1f3445] flex-col  ${(selected?.id === i.groupId) ?"bg-[#1f3445]" : null}`} onClick={() => setSelected({type:"group",id:i.groupId})} key={k}>
+                    <div className={`flex w-full py-2 border border-x-0 border-[#1f3445] flex-col text-[16px] sm:text-[20px] ${(selected?.id === i.groupId) ?"bg-[#1f3445]" : null}`} onClick={() => setSelected({type:"group",id:i.groupId})} key={k}>
                         <div className="flex px-2 items-center gap-3">
                             <div className=" flex items-center justify-center text-center  h-[30px] w-[30px]"><MdGroups className="w-full text-2xl"/></div>
                             <div>{i.groupName}</div>
                         </div>
                     </div>
                 ) : (
+                    (friends?.length === 0 && showItems==="FRIENDS" )? <div className="text-center pt-3">Make new friends to chat.</div> :
                     List?.filter((item:any)=>item?.fname.toLowerCase().includes(search.toLowerCase())).map((i: any) =>
                         <div className={`flex w-full py-2 border border-x-0 border-[#1f3445] flex-col  ${(selected?.id === i.userId) ? "bg-[#1f3445]  text-white" : null}`} onClick={() => setSelected({type:"chats", id:i.userId})} key={i.username}>
                             <div className="flex px-2 items-center gap-3">

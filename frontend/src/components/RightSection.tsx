@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { IoSend } from "react-icons/io5";
+import { IoChevronBack, IoSend } from "react-icons/io5";
 import { useAppContext } from "../contexts/Contexts";
 import chatHandler from "../action/chatHandler";
 import GroupChatHandler from "../action/GroupChatHandler";
@@ -15,7 +15,7 @@ import { getTime } from "../constants/formatTimeDate";
 
 
 const RightSection = () => {
-    const { friends, chats, selected, BACKEND_URL, grouChats, groups, showGroupInfo, setShowGroupInfo, setUpdateGroup, openModal, setGroupChats } = useAppContext();
+    const { friends, chats, selected, setSelected, BACKEND_URL, grouChats, groups, showGroupInfo, setShowGroupInfo, setUpdateGroup, openModal, setGroupChats } = useAppContext();
     const { sendGroupChat } = GroupChatHandler();
     const { leaveGroup } = GroupHandler();
     const {sendChat} = chatHandler();
@@ -67,17 +67,20 @@ const RightSection = () => {
 
     return (
         <>
-            <div className={`flex flex-col  rounded-r-md relative ${"flex-1"}`}>
+            <div className={` ${selected ? "flex-1" : "hidden"}  sm:flex flex-col ${showGroupInfo ? "hidden":""} rounded-r-md relative ${"flex-1"}`}>
 
                 {/* Top section */}
                 <div className=" h-[8%] bg-[#1f3442] text-white flex flex-col  justify-center">
                     <div className="px-2">
                         {selected?.type === "chats" ?
                             <div className="flex w-full justify-between px-2">
-                                <div className="flex gap-3 items-center"> <img className="w-10 border border-cyan-800 rounded-full" src={`https://avatar.iran.liara.run/public/${friend?.gender === "MALE" ? "boy" :"girl"}?username=${friend?.fname}`} alt="" /> <p className="text-white font-extrabold">{friend?.fname} {friend?.lname}</p></div> <button className="p-1 " onClick={handleCall}><FaVideo className="text-[26px] hover:text-[30px] text-[#508bd8]"/></button></div>
+                                <div className="flex gap-3 items-center">
+                                    {selected && <IoChevronBack className="sm:hidden flex" onClick={()=>setSelected("")} />}
+                                     <img className="w-10 border border-cyan-800 rounded-full" src={`https://avatar.iran.liara.run/public/${friend?.gender === "MALE" ? "boy" :"girl"}?username=${friend?.fname}`} alt="" /> <p className="text-white font-extrabold">{friend?.fname} {friend?.lname}</p></div> <button className="p-1 " onClick={handleCall}><FaVideo className="text-[26px] hover:text-[30px] text-[#508bd8]"/></button></div>
                             : <div  className="flex items-center justify-between">
                                 <div onClick={() => setShowGroupInfo(true)} className="flex w-full items-center gap-2">
-                                    <div className="border text-center flex items-center justify-center font-extrabold bg-white text-cyan-950 rounded-full w-[40px] h-[40px]">{group?.groupName[0].toUpperCase()}</div>
+                                {selected && <IoChevronBack onClick={()=>setSelected("")} />}
+                                    <div className="border text-center flex items-center justify-center font-extrabold bg-white text-cyan-950 rounded-full w-[40px] h-[40px]">{group?.groupName[0]?.toUpperCase()}</div>
                                     <div className="flex flex-col">
                                         <p className="text-white font-extrabold">{group?.groupName}</p>
                                         {selected?.type === "group" && <p className="text-[12px] text-cyan-300"> click here for group info</p>}
@@ -151,7 +154,7 @@ const RightSection = () => {
                 </form>
             </div>
 
-            <div className={`${showGroupInfo ? "w-[20%]" : "w-0"} border"`}>
+            <div className={`${showGroupInfo ? "sm:w-[20%] w-[100%]" : "w-0"} border"`}>
                 {showGroupInfo && <GroupInfo />}
             </div>
         </>

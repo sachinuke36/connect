@@ -8,7 +8,7 @@ import RegistrationForm from "../components/RegistrationForm";
 
     return (
         <div className="w-full mt-[10%]">
-            <div className="mx-auto w-[600px] border p-6">
+            <div className="mx-auto w-[100%] md:w-[600px] border p-6">
              <h1 className="text-center text-[22px]">{isAcc ? "Login" : "Register"}</h1>
                 {isAcc ? <LoginForm  setIsAcc={setIsAcc}/> : <RegistrationForm setIsAcc={setIsAcc}/>}
             </div>

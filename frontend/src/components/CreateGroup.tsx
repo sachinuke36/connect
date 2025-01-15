@@ -40,7 +40,7 @@ const CreateGroup = () => {
                             <div className="flex justify-center items-center w-[20%]">  <button> <FaSearch /> </button> </div>
                         </div>
                         {/* List of all the friends to add to group */}
-                        <div className="my-2 flex gap-3">
+                        <div className="my-2 flex flex-col sm:flex-row gap-3">
                             <input onChange={(e) => setGroupName(e.target.value)} value={groupname} className="border p-1 rounded-sm" type="text" name="groupname" placeholder="Enter group name" required id="" />
                             <input onChange={(e) => setGroupDescription(e.target.value)} value={groupDescription} className="border p-1 rounded-sm" type="text" name="groupdescriptio" placeholder="Enter group description (optional)" id="" />
                         </div>

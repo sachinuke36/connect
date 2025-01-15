@@ -11,7 +11,7 @@ export const useAppContext = () => useContext(AppContext);
 
 export const AppContexProvider = ({ children }: { children: ReactNode }) => {
     const [selected, setSelected] = useState<any>(null);
-    const BACKEND_URL = "http://localhost:8000";
+    const BACKEND_URL = import.meta.env.VITE_REACT_APP_BACKEND_BASEURL;
     const [friends, setFriends] = useState<any>(null);
     const [allUsers, setAllUsers] = useState<any>(null);
     const [chats, setChats] = useState<any>(null);

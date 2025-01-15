@@ -12,7 +12,7 @@ const chatHandler = () => {
         const userId = getUser()
         if(!user) return;
         const username = (JSON.parse(user)).username;
-        console.log({username, friendId, messageBody})
+        // console.log({username, friendId, messageBody})
         try {
             const res = await fetch(BACKEND_URL + "/api/sendChat",{
                 method: "POST",
