@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom"
+import { Navigate, Route, Routes } from "react-router-dom"
 import Home from "./pages/Home"
 import Login from "./pages/Login"
 import { getCookies, useAuth } from "./contexts/AuthContexts"
@@ -9,13 +9,15 @@ import { ToastContainer } from 'react-toastify';
 import Room from "./components/VideoCalling"
 import { useSocketContext } from "./contexts/SocketContext"
 import IncomingCall from "./components/IncomingCall"
+import { getUser } from "./action/authHandlers"
 
 
 const App = () => {
-  const { isLoggedIn, setIsLoggedIn} = useAuth();
+  const {  setIsLoggedIn} = useAuth();
   const { setCalling} = useSocketContext();
   const cookies = getCookies();
-  console.log(cookies)
+  const userId = getUser()
+  // console.log(cookies)
   const {socket} = useSocketContext();
   const [showCall, setShowCall] = useState<boolean>(false);
   const [roomId, setRoomId] = useState<string>("");
@@ -54,16 +56,13 @@ const App = () => {
   return (
     <div className="w-full h-full">
       <Routes>
-        { !isLoggedIn ? <>
-                    <Route path="/login" element={<Login/>}/>
-                   </>
-                : 
-                  <>
-                    <Route path="/" element={<Home/>}/>
+          
+                    <Route path="/" element={userId ? <Home/>:<Navigate to={'/login'}/>}/>
+                    <Route path="/login" element={!userId ? <Login/>: <Navigate to={'/'}/>}/>
                     <Route path="/room/:id" element ={<Room/>}/>
-                  </> 
-          }
-         <Route path="*"  element={ isLoggedIn ? <Home/> : <Login/>} ></Route>
+                   
+          
+         {/* <Route path="*"  element={ isLoggedIn ? <Home/> : <Login/>} ></Route> */}
          
       </Routes>
       <CreateGroup/>
