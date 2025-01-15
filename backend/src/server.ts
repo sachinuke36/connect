@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 8000;
 
 //middlewares
 app.use(cors({
-  origin: origin,           // Allow only this specific origin
+  origin: "*",           // Allow only this specific origin
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow these HTTP methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Allow these headers
   credentials: true,

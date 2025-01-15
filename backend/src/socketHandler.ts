@@ -16,7 +16,7 @@ import {createServer} from 'node:http';
   const server = createServer(app);
   const io = new Server(server,{
     cors:{
-      origin: origin,
+      origin: "*",
       credentials: true,
       methods:["GET", "POST"]
     }
