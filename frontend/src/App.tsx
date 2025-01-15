@@ -17,6 +17,7 @@ const App = () => {
   const {calling, setCalling} = useSocketContext();
   const userId = getUser()
   const cookies = getCookies();
+  console.log(cookies)
   const {socket} = useSocketContext();
   const [showCall, setShowCall] = useState<boolean>(false);
   const [roomId, setRoomId] = useState<string>("");
@@ -49,7 +50,6 @@ const App = () => {
   },[socket, handleIncomingCall])
  
   
-    console.log(showCall)
 
   
   

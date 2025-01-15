@@ -142,9 +142,9 @@ export interface User{
         const u = await getUser(user.username);
         const token = await jwt.sign({username: user.username},JWT_SECRET,{expiresIn:"1d"});
           return  res.status(200).cookie("authToken", token, {
-            httpOnly: false, 
+            httpOnly: true, 
             secure: process.env.NODE_ENV !== "development", 
-            sameSite:'strict', 
+            sameSite:'none', 
             maxAge: 1000 * 60 * 60 * 24, 
           }).json({data: u, success:true});
     }
