@@ -1,4 +1,4 @@
-// import { StrictMode } from 'react'
+import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
@@ -9,6 +9,7 @@ import { SocketContextProvider } from './contexts/SocketContext.tsx'
 // import { WebRTCContextProvider } from './contexts/WebRTCContext.tsx'
 
 createRoot(document.getElementById('root')!).render(
+  <StrictMode>
     <AppContexProvider >
       {/* <WebRTCContextProvider> */}
     <SocketContextProvider>
@@ -20,5 +21,6 @@ createRoot(document.getElementById('root')!).render(
     </SocketContextProvider>
     {/* </WebRTCContextProvider> */}
     </ AppContexProvider >
+    </StrictMode>
   ,
 )
