@@ -13,13 +13,14 @@ app.use(cors({origin: origin,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
   allowedHeaders: ['Content-Type', 'Authorization'],}))
-  
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-
-
 app.use('/api',router());
+
+app.get("/",(req:express.Request,res:express.Response)=>{
+  res.send("<h1>Hii</h1>")
+})
 
 server.listen(PORT,()=>{
   console.log("Server is running on : " + PORT )
