@@ -18,7 +18,7 @@ const userId = getUser();
             body : JSON.stringify({userId,receiverId })
         });
         const data = (await res.json()).data;
-        // console.log(data);
+        console.log(data);
         socket?.emit("friend-request-sent", { senderId: userId, receiverId });
         setFriendRequests((prev: any) => [
             ...prev,

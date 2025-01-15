@@ -5,7 +5,7 @@ import { getUser } from "./authHandlers";
 
 const chatHandler = () => {
     const {socket} = useSocketContext();
-    const {chats, setChats} = useAppContext();
+    const { setChats} = useAppContext();
     const sendChat = async(messageBody:string,friendId:string, BACKEND_URL:string )=>{
         if(!friendId) return;
         const user = localStorage.getItem("user");
