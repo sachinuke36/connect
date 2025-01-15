@@ -7,7 +7,7 @@ import {app, server} from './socketHandler'
 import dotenv from'dotenv'
 dotenv.config()
 
-const origin = "http://localhost:5173"
+const origin = process.env.NODE_ENV =="development" ?  "http://localhost:5173" : "https://connect-chat-app-pern.netlify.app"
 const PORT = process.env.PORT || 8000;
 
 //middlewares
