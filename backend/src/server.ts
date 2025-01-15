@@ -4,6 +4,8 @@ import cors from 'cors'
 import {createServer} from 'node:http';
 import {Server} from 'socket.io'
 import {app, server} from './socketHandler'
+import dotenv from'dotenv'
+dotenv.config()
 
 const origin = "http://localhost:5173"
 const PORT = process.env.PORT || 8000;
