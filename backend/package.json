@@ -9,7 +9,7 @@
     "server": "nodemon",
     "build": "npm install && npx prisma generate && tsc",
     "start": "node dist/server.js",
-    "vercel-build":"echo hello"
+    "vercel-build": "echo hello"
   },
   "author": "",
   "license": "ISC",
