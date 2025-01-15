@@ -114,13 +114,16 @@
 {
   "compilerOptions": {
     "module": "NodeNext",
-    "moduleResolution": "node16",
+    "moduleResolution": "nodenext",
     "baseUrl": "src",
     "outDir": "dist",
     "sourceMap": true,
     "noImplicitAny": true,
     "typeRoots": ["node_modules/@types"],
-    "types": []
+    "types": [],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "include": ["src/**/*"]
 }
