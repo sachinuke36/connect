@@ -1,6 +1,6 @@
 
 import { createContext, ReactNode, useContext, useEffect, useState, useCallback } from "react";
-import { getUser } from "../action/authHandlers";
+// import { getUser } from "../action/authHandlers";
 // import { getFriendRequest } from "../action/friendRequestHandler";
 type items = "FRIENDS" | "GROUPS" | "NONFRIENDS" | "CREATEGROUP" | ""
  
