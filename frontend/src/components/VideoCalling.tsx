@@ -78,6 +78,13 @@ const Room = ()=>{
             socket?.emit("call-ended",{callInfo})
         }
         // console.log(pc);
+        if (localStream) {
+            localStream.getTracks().forEach((track: MediaStreamTrack) => {
+                track.stop();
+            });
+            localStream = null; // Clear the reference
+        }
+
         setEndCall(false);
     },[])
     
@@ -157,15 +164,15 @@ const Room = ()=>{
       
 
     return(<div className="flex flex-col gap-4 h-[100vh] bg-[#06121c]" >
-        <div className="flex  gap-5 mt-10 mx-auto justify-center">
+        <div className="flex flex-col items-center sm:flex-row gap-5 mt-10 mx-auto justify-center">
         {/* local video */}
-        <div>
-            <video className="border rounded-md" ref = {localVideoRef} controls width={300} height={300} playsInline muted autoPlay></video>
+        <div className="w-full">
+            <video className="border mx-auto rounded-md" ref = {localVideoRef} controls width={300} height={300} playsInline muted autoPlay></video>
             <p className="text-center text-white text-2xl font-extrabold">You</p>
         </div>
         {/* remote video */}
-        <div>
-            <video className="border rounded-md" ref={remoteVideoRef} playsInline controls  autoPlay></video>
+        <div className="w-full">
+            <video className="border w-[95%] mx-auto sm:w-full rounded-md" ref={remoteVideoRef} playsInline controls  autoPlay></video>
             <p className="text-center text-2xl text-white font-extrabold">{allUsers?.find((u:any)=>u.userId === calling)?.fname}</p>
         </div>
 

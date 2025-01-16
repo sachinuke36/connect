@@ -1,9 +1,10 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAppContext } from "../contexts/Contexts"
 import { getUser } from "./authHandlers";
 import { useSocketContext } from "../contexts/SocketContext";
 
 const GroupChatHandler = () => {
+    const [loading, setLoading] = useState<boolean>(false);
     const {BACKEND_URL, selected, setSelected} = useAppContext();
     const {socket} = useSocketContext()
     
@@ -35,8 +36,9 @@ const GroupChatHandler = () => {
 
  const sendGroupChat = async(messageBody:string,groupId:string,)=>{
     if(!groupId) return;
-    const userId = getUser()
+    const userId = getUser();
     try {
+        setLoading(true);
         const res = await fetch(BACKEND_URL + "/api/sendgroupchat",{
             method: "POST",
             credentials: "include",
@@ -55,10 +57,12 @@ const GroupChatHandler = () => {
     } catch (error) {
         console.log("Error in sendChat",error);
         throw new Error("Something went wrong!")
+    }finally{
+        setLoading(false);
     }
 }
 
-  return { getGroupChats, sendGroupChat}
+  return { getGroupChats, sendGroupChat, loading}
 }
 
 export default GroupChatHandler

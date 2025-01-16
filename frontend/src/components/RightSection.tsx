@@ -16,9 +16,9 @@ import { getTime } from "../constants/formatTimeDate";
 
 const RightSection = () => {
     const { friends, chats, selected, setSelected, BACKEND_URL, grouChats, groups, showGroupInfo, setShowGroupInfo, setUpdateGroup, openModal } = useAppContext();
-    const { sendGroupChat } = GroupChatHandler();
+    const { sendGroupChat, loading } = GroupChatHandler();
     const { leaveGroup } = GroupHandler();
-    const {sendChat} = chatHandler();
+    const {sendChat, loading: loadingSendChat} = chatHandler();
     const {socket } = useSocketContext()
     const userId = getUser()
     const [messageBody, setMessageBody] = useState<string>("");
@@ -150,7 +150,12 @@ const RightSection = () => {
                 {/* bottom section */}
                 <form className="h-[10%] flex w-full  bg-[#1f3445] items-center justify-center gap-3" onSubmit={(e) => handleClick(e)}>
                     <input className="border border-[#1f3450]  w-[70%] bg-[#2e4c65] outline-none text-white  p-3 rounded-md" type="text" value={messageBody} onChange={(e) => setMessageBody(e.target.value)} name="message" />
-                    <button type="submit"> <IoSend className="text-[30px] text-[#508bd8]" /> </button>
+                    <button disabled={loadingSendChat || loading} type="submit">
+                        {
+                            (loading || loadingSendChat ) ? <svg className="animate-spin mx-auto border-t-2 border-r-2 rounded-full border-green-600 h-5 w-5 " viewBox="0 0 24 24"/> :  
+                            <IoSend className="text-[30px] text-[#508bd8]" /> 
+                        }
+                    </button>
                 </form>
             </div>
 

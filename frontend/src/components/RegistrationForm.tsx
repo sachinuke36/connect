@@ -10,7 +10,7 @@ const RegistrationForm = ({setIsAcc}:{setIsAcc:(value:boolean)=>void})=>{
     const [gender, setGender] = useState<string | undefined>("");
 
 
-    const {register} = useRegistration();
+    const {register, loading} = useRegistration();
 
     const handleSubmit = (e : React.FormEvent<HTMLFormElement> )=>{
         e.preventDefault();
@@ -44,7 +44,12 @@ const RegistrationForm = ({setIsAcc}:{setIsAcc:(value:boolean)=>void})=>{
                         <option value="FEMALE">Female</option>
                        </select>
                     </div>
-                    <button className="border w-[200px] mx-auto p-2 rounded-md" type="submit"> Register</button>
+                    <button disabled={loading}  className={`border w-[200px] mx-auto p-2 rounded-md`} type="submit"> 
+                        {
+                            loading ? <svg className="animate-spin mx-auto border-t-2 border-r-2 rounded-full border-green-600 h-5 w-5 " viewBox="0 0 24 24"/> :
+                            <span>Register </span> 
+                        }
+                    </button>
                     <p className="my-3"><span>Have an account ? <button onClick={()=>setIsAcc(true)}>Login</button> </span></p>
                 </form>
         </div>

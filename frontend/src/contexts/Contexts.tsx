@@ -1,7 +1,8 @@
 
 import { createContext, ReactNode, useContext, useEffect, useState, useCallback } from "react";
+import { getUser } from "../action/authHandlers";
 // import { getFriendRequest } from "../action/friendRequestHandler";
-type items = "FRIENDS" | "GROUPS" | "NONFRIENDS" | "CREATEGROUP"
+type items = "FRIENDS" | "GROUPS" | "NONFRIENDS" | "CREATEGROUP" | ""
  
 
 
@@ -16,14 +17,14 @@ export const AppContexProvider = ({ children }: { children: ReactNode }) => {
     const [allUsers, setAllUsers] = useState<any>(null);
     const [chats, setChats] = useState<any>(null);
     const [addFriends, setAddFriends] = useState<boolean>(false);
-    const [showItems, setShowItems] = useState<items>("FRIENDS")
+    const [showItems, setShowItems] = useState<items>("")
     const [friendRequests, setFriendRequests] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [groups, setGroups] = useState<any[]>([]);
     const [grouChats, setGroupChats] = useState<any>(null);
     const [showGroupInfo, setShowGroupInfo] = useState<boolean>(false);
     const [updateGroup, setUpdateGroup] = useState<boolean>(false);
-
+    
     let userString = localStorage.getItem("user");
 
     const getFriends = useCallback(async () => {
@@ -37,17 +38,17 @@ export const AppContexProvider = ({ children }: { children: ReactNode }) => {
                 body: JSON.stringify({ username: user?.username }),
             });
             const data = await res.json();
+            console.log(data);
             setFriends(data.data);
         } catch (error) {
             console.log("Error in getChats");
         }
-    }, []); // Dependencies: userString and BACKEND_URL
+    }, [addFriends, showItems, friendRequests, BACKEND_URL, userString]); 
 
     const fetChats = useCallback(async () => {
         if (!userString) return;
         const username = JSON.parse(userString).username;
         const friendUserId = selected?.id;
-        // console.log(selected.id);
         const res = await fetch(BACKEND_URL + "/api/getchats", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -56,11 +57,10 @@ export const AppContexProvider = ({ children }: { children: ReactNode }) => {
         });
         const data = await res.json();
         setChats(data.data);
-    }, [selected, userString, BACKEND_URL]); // Dependencies: selected, userString, and BACKEND_URL
+    }, [selected, userString, BACKEND_URL]); 
 
 
     const getGroupChats = useCallback(async()=>{
-        // console.log(selected?.type)
         try {
             if(selected?.type === "group"){
                 const res = await fetch(BACKEND_URL + "/api/getgroupchats",{
@@ -86,26 +86,26 @@ export const AppContexProvider = ({ children }: { children: ReactNode }) => {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                credentials: "include", // Ensure credentials are included if needed
+                credentials: "include", 
             });
             const data = await res.json();
             if (res.ok) {
-                setAllUsers(data.data); // Assuming the response contains the users in the `data` field
+                setAllUsers(data.data); 
             } else {
                 console.log("Failed to fetch users");
             }
         } catch (error) {
             console.error(error);
         } 
-    }, [addFriends, showItems, friendRequests, BACKEND_URL]); 
+    }, [addFriends, showItems, friendRequests, BACKEND_URL, userString]); 
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
 
     useEffect(() => {
-        getFriends();
-    }, [getFriends]); // Dependency is the memoized function getChats
+            getFriends();
+    }, [getFriends, userString]); // Dependency is the memoized function getChats
 
     useEffect(() => {
       if(selected?.type === "chats") fetChats();
@@ -113,7 +113,7 @@ export const AppContexProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         getAllUsers(); // Call the memoized function
-    }, [getAllUsers]);
+    }, [getAllUsers, userString]);
 
     useEffect(() => {
         if(selected?.type === "group") getGroupChats();
@@ -140,7 +140,8 @@ export const AppContexProvider = ({ children }: { children: ReactNode }) => {
                 groups, setGroups,
                 grouChats, setGroupChats,
                 showGroupInfo, setShowGroupInfo,
-                updateGroup, setUpdateGroup, getAllUsers
+                updateGroup, setUpdateGroup, getAllUsers,getFriends
+
             }}
         >
             {children}

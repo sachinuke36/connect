@@ -33,7 +33,7 @@ const App = () => {
     setCalling(data.from)
     setRoomId(data.roomId)
     setShowCall(true);
-    console.log("this is the setShow", showCall)
+    // console.log("this is the setShow", showCall)
     console.log(data);
   },[])
 

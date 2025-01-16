@@ -17,7 +17,7 @@ export const SocketContextProvider = ({children}:{children: ReactNode})=>{
     const userId = getUser();
     const BACKEND_URL = import.meta.env.VITE_REACT_APP_BACKEND_BASEURL;
 
-    const {setFriendRequests, allUsers, setFriends,selected, getAllUsers, setChats, setGroupChats, setGroups} = useAppContext()
+    const {setFriendRequests, allUsers, setFriends,selected, getAllUsers, setChats, setGroupChats, setGroups     } = useAppContext()
 
         useEffect(()=>{
 

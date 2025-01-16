@@ -36,6 +36,7 @@ const List = ({search}:{search:string}) => {
             buttonObject[i.userId] = "Add Friend";
         }
     });
+    if(showItems==="") return <div className="text-center mt-[40%]">Welcome {`${allUsers?.find((u:any)=>u.userId === userId)?.fname} ${allUsers?.find((u:any)=>u.userId === userId)?.lname} 👋 `}</div>
     return (
         <>
             {
