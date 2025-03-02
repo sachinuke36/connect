@@ -167,7 +167,7 @@ const Room = ()=>{
         <div className="flex flex-col items-center sm:flex-row gap-5 mt-10 mx-auto justify-center">
         {/* local video */}
         <div className="w-full">
-            <video className="border mx-auto rounded-md" ref = {localVideoRef} controls width={300} height={300} playsInline muted autoPlay></video>
+            <video className="border mx-auto rounded-md" ref = {localVideoRef} controls width={300} height={300} playsInline  autoPlay></video>
             <p className="text-center text-white text-2xl font-extrabold">You</p>
         </div>
         {/* remote video */}

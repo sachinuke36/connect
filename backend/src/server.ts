@@ -7,8 +7,8 @@ import {app, server} from './socketHandler'
 import dotenv from'dotenv'
 dotenv.config()
 
-const origin ="https://connect-chat-app-pern.netlify.app"
-// const origin = "http://localhost:5173"
+// const origin ="https://connect-chat-app-pern.netlify.app"
+const origin = "http://localhost:5173"
 const PORT = process.env.PORT || 8000;
 
 //middlewares
@@ -23,9 +23,7 @@ app.options("*",cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// app.get("/",(req:express.Request,res:express.Response)=>{
-//   res.send("<h1>Hii</h1>")
-// })
+
 app.use('/api',router());
 
 
