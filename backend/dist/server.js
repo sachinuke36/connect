@@ -9,20 +9,29 @@ const cors_1 = __importDefault(require("cors"));
 const socketHandler_1 = require("./socketHandler");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-// const origin = process.env.NODE_ENV =="development" ?  "http://localhost:5173" : "https://connect-chat-app-pern.netlify.app"
+const allowedOrigins = [
+    "https://connect-chat-app-pern.netlify.app",
+    "http://localhost:5173",
+    "http://localhost:5174"
+];
 const PORT = process.env.PORT || 8000;
 //middlewares
 socketHandler_1.app.use((0, cors_1.default)({
-    origin: '*', // Allow only this specific origin
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow these HTTP methods
-    allowedHeaders: ['Content-Type', 'Authorization'], // Allow these headers
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        }
+        else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
 }));
+socketHandler_1.app.options("*", (0, cors_1.default)());
 socketHandler_1.app.use(express_1.default.json());
 socketHandler_1.app.use(express_1.default.urlencoded({ extended: true }));
-// app.get("/",(req:express.Request,res:express.Response)=>{
-//   res.send("<h1>Hii</h1>")
-// })
 socketHandler_1.app.use('/api', (0, router_1.default)());
 socketHandler_1.server.listen(PORT, () => {
     console.log("Server is running on : " + PORT);

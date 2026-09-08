@@ -37,6 +37,9 @@ model User{
   username String @unique
   password String
   gender Gender @default(MALE)
+  avatarUrl String?
+  lastSeen DateTime @default(now())
+  isOnline Boolean @default(false)
 
   friendRequestSender FriendRequest[] @relation("sender")
   friendRequestReceiver FriendRequest[] @relation("receiver")

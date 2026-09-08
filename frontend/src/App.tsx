@@ -22,6 +22,7 @@ const App = () => {
   const [showCall, setShowCall] = useState<boolean>(false);
   const [roomId, setRoomId] = useState<string>("");
   const [from, setFrom] = useState<string>("");
+  const [callType, setCallType] = useState<"video" | "audio">("video");
 
   useEffect(()=>{
     if(cookies) setIsLoggedIn(true);
@@ -32,8 +33,8 @@ const App = () => {
     setFrom(data.from);
     setCalling(data.from)
     setRoomId(data.roomId)
+    setCallType(data.type || "video");
     setShowCall(true);
-    // console.log("this is the setShow", showCall)
     console.log(data);
   },[])
 
@@ -42,10 +43,14 @@ const App = () => {
     socket?.on("accepted:call",()=>{
       setShowCall(false);
     });
-    
-    return ()=>{    
+    socket?.on("call-declined", () => {
+      setShowCall(false);
+    });
+
+    return ()=>{
       socket?.off("incoming:call",handleIncomingCall);
       socket?.off("accepted:call");
+      socket?.off("call-declined");
     }
   },[socket, handleIncomingCall])
  
@@ -66,7 +71,7 @@ const App = () => {
          
       </Routes>
       <CreateGroup/>
-      {showCall && <IncomingCall  from={from} roomId={roomId} setShowCall={setShowCall} />    }
+      {showCall && <IncomingCall from={from} roomId={roomId} setShowCall={setShowCall} callType={callType} />}
       <ToastContainer/>
     </div>
   )

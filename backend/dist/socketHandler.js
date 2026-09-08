@@ -7,7 +7,7 @@ exports.io = exports.server = exports.app = exports.getReceiverSocketId = void 0
 const socket_io_1 = require("socket.io");
 const express_1 = __importDefault(require("express"));
 const node_http_1 = require("node:http");
-const origin = "http://localhost:5173";
+const db_config_1 = require("./db/db.config");
 const app = (0, express_1.default)();
 exports.app = app;
 const server = (0, node_http_1.createServer)(app);
@@ -22,61 +22,128 @@ const io = new socket_io_1.Server(server, {
 exports.io = io;
 const userToSocketIdMap = {};
 const socketToGroupMap = {};
-io.on("connection", (socket) => {
+const typingUsers = {};
+io?.on("connection", async (socket) => {
     console.log('a user connected : ', socket.id);
-    const userId = socket.handshake.query.userId;
-    if (Array.isArray(userId)) {
-        userToSocketIdMap[userId[0]] = socket.id;
+    const queryUserId = socket.handshake.query.userId;
+    const oduserId = Array.isArray(queryUserId) ? queryUserId[0] : queryUserId;
+    if (oduserId) {
+        userToSocketIdMap[oduserId] = socket.id;
+        // Update user online status
+        try {
+            await db_config_1.prisma.user.update({
+                where: { userId: oduserId },
+                data: { isOnline: true, lastSeen: new Date() }
+            });
+        }
+        catch (error) {
+            console.error("Error updating online status:", error);
+        }
     }
-    else if (userId) {
-        userToSocketIdMap[userId] = socket.id;
-    }
-    io.emit("getOnlineUsers", Object.keys(userToSocketIdMap));
+    io?.emit("getOnlineUsers", Object.keys(userToSocketIdMap));
     socketToGroupMap[socket.id] = new Set();
-    socket.on("joinGroup", (groupId) => {
+    socket?.on("joinGroup", (groupId) => {
         socket.join(groupId);
         socketToGroupMap[socket.id].add(groupId);
         // console.log(socketToGroupMap)
         console.log(`User ${socket.id} joined group with ID: ${groupId}`);
     });
     //sockets for video call
-    socket.on("room:join", (data) => {
+    socket?.on("room:join", (data) => {
         const { to, from, roomId } = data;
         const userSocketId = (0, exports.getReceiverSocketId)(from);
         const toSocketId = (0, exports.getReceiverSocketId)(to);
         if (toSocketId)
-            io.to(toSocketId).emit("incoming:call", data);
-        io.to(roomId).emit("user:joined", { userId: from, socketId: socket.id });
-        socket.join(roomId);
-        io.to(userSocketId).emit("room:join", data);
+            io?.to(toSocketId).emit("incoming:call", data);
+        io?.to(roomId).emit("user:joined", { userId: from, socketId: socket.id });
+        socket?.join(roomId);
+        io?.to(userSocketId).emit("room:join", data);
     });
-    socket.on("offer", ({ from, to, offer }) => {
-        io.to((0, exports.getReceiverSocketId)(to)).emit("offer", { offer, from, to });
+    socket?.on("offer", ({ from, to, offer }) => {
+        io?.to((0, exports.getReceiverSocketId)(to)).emit("offer", { offer, from, to });
     });
-    socket.on("accepted:call", ({ from, to }) => {
-        io.to((0, exports.getReceiverSocketId)(from)).emit("accepted:call");
+    socket?.on("accepted:call", ({ from, to }) => {
+        io?.to((0, exports.getReceiverSocketId)(from)).emit("accepted:call");
     });
-    socket.on("answer", ({ from, to, answer }) => {
-        io.to((0, exports.getReceiverSocketId)(from)).emit("answer", { answer, from, to });
+    socket?.on("call-declined", ({ from, to }) => {
+        io?.to((0, exports.getReceiverSocketId)(from)).emit("call-declined");
     });
-    socket.on("icecandidate", ({ candidate, to }) => {
-        io.to((0, exports.getReceiverSocketId)(to)).emit("icecandidate", { candidate });
+    socket?.on("answer", ({ from, to, answer }) => {
+        io?.to((0, exports.getReceiverSocketId)(from)).emit("answer", { answer, from, to });
     });
-    socket.on("end-call", ({ to, from }) => {
-        io.to((0, exports.getReceiverSocketId)(to)).emit("end-call", { to, from });
+    socket?.on("icecandidate", ({ candidate, to }) => {
+        io?.to((0, exports.getReceiverSocketId)(to)).emit("icecandidate", { candidate });
     });
-    socket.on("call-ended", ({ callInfo }) => {
-        io.to((0, exports.getReceiverSocketId)(callInfo[0])).emit("call-ended", callInfo);
-        io.to((0, exports.getReceiverSocketId)(callInfo[1])).emit("call-ended", callInfo);
+    socket?.on("end-call", ({ to, from }) => {
+        io?.to((0, exports.getReceiverSocketId)(to)).emit("end-call", { to, from });
     });
-    socket.on("disconnect", () => {
-        console.log("user disconnected", socket.id);
-        for (const userId in userToSocketIdMap) {
-            if (userToSocketIdMap[userId] === socket.id) {
-                delete userToSocketIdMap[userId];
+    socket?.on("call-ended", ({ callInfo }) => {
+        io?.to((0, exports.getReceiverSocketId)(callInfo[0])).emit("call-ended", callInfo);
+        io?.to((0, exports.getReceiverSocketId)(callInfo[1])).emit("call-ended", callInfo);
+    });
+    // Typing indicator
+    socket?.on("typing:start", ({ to, from }) => {
+        const toSocketId = (0, exports.getReceiverSocketId)(to);
+        if (toSocketId) {
+            io?.to(toSocketId).emit("typing:start", { from });
+        }
+    });
+    socket?.on("typing:stop", ({ to, from }) => {
+        const toSocketId = (0, exports.getReceiverSocketId)(to);
+        if (toSocketId) {
+            io?.to(toSocketId).emit("typing:stop", { from });
+        }
+    });
+    // Message read receipts
+    socket?.on("message:delivered", async ({ messageId, to }) => {
+        try {
+            await db_config_1.prisma.message.update({
+                where: { messageId },
+                data: { status: "DELIVERED" }
+            });
+            const toSocketId = (0, exports.getReceiverSocketId)(to);
+            if (toSocketId) {
+                io?.to(toSocketId).emit("message:delivered", { messageId });
+            }
+        }
+        catch (error) {
+            console.error("Error updating message status:", error);
+        }
+    });
+    socket?.on("message:seen", async ({ messageIds, to, conversationId }) => {
+        try {
+            await db_config_1.prisma.message.updateMany({
+                where: { messageId: { in: messageIds } },
+                data: { status: "SEEN" }
+            });
+            const toSocketId = (0, exports.getReceiverSocketId)(to);
+            if (toSocketId) {
+                io?.to(toSocketId).emit("message:seen", { messageIds, conversationId });
+            }
+        }
+        catch (error) {
+            console.error("Error updating message status:", error);
+        }
+    });
+    socket?.on("disconnect", async () => {
+        console.log("user disconnected", socket?.id);
+        for (const oduserId in userToSocketIdMap) {
+            if (userToSocketIdMap[oduserId] === socket.id) {
+                // Update last seen
+                try {
+                    await db_config_1.prisma.user.update({
+                        where: { userId: oduserId },
+                        data: { lastSeen: new Date(), isOnline: false }
+                    });
+                }
+                catch (error) {
+                    console.error("Error updating last seen:", error);
+                }
+                delete userToSocketIdMap[oduserId];
                 break;
             }
         }
+        io?.emit("getOnlineUsers", Object.keys(userToSocketIdMap));
     });
 });
 const getReceiverSocketId = (receiverId) => {

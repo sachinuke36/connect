@@ -1,19 +1,33 @@
-import {createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { getUser } from "../action/authHandlers";
 import { io, Socket } from "socket.io-client";
 import { useAppContext } from "./Contexts";
 import { toast } from "react-toastify";
 
+interface SocketContextType {
+    socket: Socket | null;
+    setSocket: React.Dispatch<React.SetStateAction<Socket | null>>;
+    calling: string | null;
+    setCalling: React.Dispatch<React.SetStateAction<string | null>>;
+    online: string[] | null;
+    typingUsers: string[];
+}
 
+const SocketContext = createContext<SocketContextType | null>(null);
 
-const SocketContext = createContext<any>(null);
-
-export const useSocketContext = () => useContext(SocketContext);
+export const useSocketContext = () => {
+    const context = useContext(SocketContext);
+    if (!context) {
+        throw new Error("useSocketContext must be used within a SocketContextProvider");
+    }
+    return context;
+};
 
 export const SocketContextProvider = ({children}:{children: ReactNode})=>{
     const [socket, setSocket] = useState<Socket | null>(null);
     const [calling, setCalling] = useState<string | null>(null);
-    const [online, setOnline] = useState<string | null>(null);
+    const [online, setOnline] = useState<string[] | null>(null);
+    const [typingUsers, setTypingUsers] = useState<string[]>([]);
     const userId = getUser();
     const BACKEND_URL = import.meta.env.VITE_REACT_APP_BACKEND_BASEURL;
 
@@ -75,6 +89,28 @@ export const SocketContextProvider = ({children}:{children: ReactNode})=>{
                 setOnline(data);
             })
 
+            // Typing indicators
+            socket?.on("typing:start", ({ from }) => {
+                setTypingUsers(prev => prev.includes(from) ? prev : [...prev, from]);
+            });
+
+            socket?.on("typing:stop", ({ from }) => {
+                setTypingUsers(prev => prev.filter(id => id !== from));
+            });
+
+            // Message status updates
+            socket?.on("message:delivered", ({ messageId }) => {
+                setChats((prev: any[]) => prev?.map(chat =>
+                    chat.messageId === messageId ? { ...chat, status: "DELIVERED" } : chat
+                ));
+            });
+
+            socket?.on("message:seen", ({ messageIds }) => {
+                setChats((prev: any[]) => prev?.map(chat =>
+                    messageIds.includes(chat.messageId) ? { ...chat, status: "SEEN" } : chat
+                ));
+            });
+
 
             }
             return ()=>{
@@ -84,6 +120,10 @@ export const SocketContextProvider = ({children}:{children: ReactNode})=>{
                 socket?.off("newGroupMessage");
                 socket?.off("createGroup");
                 socket?.off("getOnlineUsers");
+                socket?.off("typing:start");
+                socket?.off("typing:stop");
+                socket?.off("message:delivered");
+                socket?.off("message:seen");
                 socket?.disconnect();
                 setSocket(null);
             }
@@ -99,7 +139,7 @@ export const SocketContextProvider = ({children}:{children: ReactNode})=>{
 
 
     return (<SocketContext.Provider value={{
-        socket, setSocket, calling, setCalling, online
+        socket, setSocket, calling, setCalling, online, typingUsers
     }} >
             {children}
     </SocketContext.Provider>)
