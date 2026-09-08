@@ -211,6 +211,9 @@ connect/
 3. Create a `.env` file:
    ```env
    VITE_REACT_APP_BACKEND_BASEURL="http://localhost:8000"
+   # For production video calls, add TURN server credentials (see Environment Variables section)
+   VITE_TURN_USERNAME="your-turn-username"
+   VITE_TURN_CREDENTIAL="your-turn-credential"
    ```
 
 4. Start the development server:
@@ -306,6 +309,33 @@ The application uses WebRTC for peer-to-peer video and audio calling:
 | Variable | Description |
 |----------|-------------|
 | `VITE_REACT_APP_BACKEND_BASEURL` | Backend API URL |
+| `VITE_TURN_USERNAME` | TURN server username (required for production video calls) |
+| `VITE_TURN_CREDENTIAL` | TURN server password (required for production video calls) |
+
+### Setting Up TURN Servers (Required for Production Video Calls)
+
+Video/audio calls work on localhost without TURN servers, but **production deployments require TURN servers** to relay traffic when direct peer-to-peer connections fail (due to firewalls, symmetric NATs, etc.).
+
+**Free TURN Server Options:**
+
+1. **Metered.ca (Recommended)**
+   - Sign up at [https://www.metered.ca/](https://www.metered.ca/)
+   - Free tier includes 500GB/month
+   - Get your credentials from the dashboard
+   - Add to your `.env`:
+     ```env
+     VITE_TURN_USERNAME="your-metered-username"
+     VITE_TURN_CREDENTIAL="your-metered-credential"
+     ```
+
+2. **Xirsys**
+   - Sign up at [https://xirsys.com/](https://xirsys.com/)
+   - Free tier available
+   - Update the TURN server URLs in `VideoCalling.tsx`
+
+3. **Self-hosted (coturn)**
+   - Install coturn on your server
+   - Configure with your domain and credentials
 
 ## Building for Production
 

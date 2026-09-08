@@ -38,14 +38,35 @@ const Room = () => {
     const [remoteUserId, setRemoteUserId] = useState<string | null>(calling);
     const [callDuration, setCallDuration] = useState<string>("00:00");
 
+    // ICE servers configuration - TURN servers are required for production
+    // to relay traffic when direct peer-to-peer connection fails
     const servers: RTCConfiguration = {
         iceServers: [
+            // STUN servers (for discovering public IP)
             { urls: "stun:stun.l.google.com:19302" },
             { urls: "stun:stun1.l.google.com:19302" },
-            { urls: "stun:stun2.l.google.com:19302" },
-            { urls: "stun:stun3.l.google.com:19302" },
-            { urls: "stun:stun4.l.google.com:19302" },
-            { urls: "stun:stun.services.mozilla.com" },
+            // TURN servers (for relaying when direct connection fails)
+            // Using Metered.ca free TURN servers - get your own at https://www.metered.ca/
+            {
+                urls: "turn:a.relay.metered.ca:80",
+                username: import.meta.env.VITE_TURN_USERNAME || "free",
+                credential: import.meta.env.VITE_TURN_CREDENTIAL || "free",
+            },
+            {
+                urls: "turn:a.relay.metered.ca:80?transport=tcp",
+                username: import.meta.env.VITE_TURN_USERNAME || "free",
+                credential: import.meta.env.VITE_TURN_CREDENTIAL || "free",
+            },
+            {
+                urls: "turn:a.relay.metered.ca:443",
+                username: import.meta.env.VITE_TURN_USERNAME || "free",
+                credential: import.meta.env.VITE_TURN_CREDENTIAL || "free",
+            },
+            {
+                urls: "turns:a.relay.metered.ca:443?transport=tcp",
+                username: import.meta.env.VITE_TURN_USERNAME || "free",
+                credential: import.meta.env.VITE_TURN_CREDENTIAL || "free",
+            },
         ],
         iceCandidatePoolSize: 10,
     };
