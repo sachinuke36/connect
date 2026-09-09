@@ -8,7 +8,7 @@ const MiddleSection = () => {
     const { selected } = useAppContext();
 
     return (
-        <div className={`w-full sm:w-80 lg:w-96 ${selected ? "hidden sm:flex" : "flex"} bg-[#071928] text-white flex-col border-r border-[#1f3445]`}>
+        <div className={`w-full sm:w-80 lg:w-96 flex-1 sm:flex-initial ${selected ? "hidden sm:flex" : "flex"} bg-[#071928] text-white flex-col border-r border-[#1f3445]`}>
             <div className="p-4 border-b border-[#1f3445]">
                 <h1 className="text-xl font-bold text-white mb-4">Messages</h1>
                 <div className="relative">

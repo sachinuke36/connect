@@ -76,13 +76,13 @@ const CreateGroup = () => {
 
     return (
         <Modal isOpen={isModalOpen} onClose={closeModal}>
-            <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-3 border-b border-[#2a4a5e] pb-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                        <MdGroups className="text-white text-2xl" />
+            <div className="flex flex-col gap-3 sm:gap-4">
+                <div className="flex items-center gap-3 border-b border-[#2a4a5e] pb-3 sm:pb-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                        <MdGroups className="text-white text-xl sm:text-2xl" />
                     </div>
                     <div>
-                        <h2 className="text-xl font-bold text-white">
+                        <h2 className="text-lg sm:text-xl font-bold text-white">
                             {updateGroup ? "Update Group" : "Create New Group"}
                         </h2>
                         <p className="text-sm text-gray-400">
@@ -91,11 +91,11 @@ const CreateGroup = () => {
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-2 sm:gap-3">
                     <input
                         onChange={(e) => setGroupName(e.target.value)}
                         value={groupname}
-                        className="w-full bg-[#0c1317] text-white placeholder-gray-400 px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-cyan-500/50 border border-[#2a4a5e]"
+                        className="w-full bg-[#0c1317] text-white placeholder-gray-400 px-3 py-2.5 sm:px-4 sm:py-3 rounded-xl outline-none focus:ring-2 focus:ring-cyan-500/50 border border-[#2a4a5e] text-sm sm:text-base"
                         type="text"
                         name="groupname"
                         placeholder="Group name *"
@@ -104,7 +104,7 @@ const CreateGroup = () => {
                     <input
                         onChange={(e) => setGroupDescription(e.target.value)}
                         value={groupDescription}
-                        className="w-full bg-[#0c1317] text-white placeholder-gray-400 px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-cyan-500/50 border border-[#2a4a5e]"
+                        className="w-full bg-[#0c1317] text-white placeholder-gray-400 px-3 py-2.5 sm:px-4 sm:py-3 rounded-xl outline-none focus:ring-2 focus:ring-cyan-500/50 border border-[#2a4a5e] text-sm sm:text-base"
                         type="text"
                         name="groupdescription"
                         placeholder="Group description (optional)"
@@ -112,17 +112,17 @@ const CreateGroup = () => {
                 </div>
 
                 <div>
-                    <label className="block text-sm font-semibold text-white mb-2">
+                    <label className="block text-xs sm:text-sm font-semibold text-white mb-1.5 sm:mb-2">
                         Add Members
                     </label>
                     <input
                         placeholder="Search friends..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="w-full bg-[#0c1317] text-white placeholder-gray-400 px-4 py-2 rounded-xl outline-none focus:ring-2 focus:ring-cyan-500/50 border border-[#2a4a5e] mb-3"
+                        className="w-full bg-[#0c1317] text-white placeholder-gray-400 px-3 py-2 sm:px-4 rounded-xl outline-none focus:ring-2 focus:ring-cyan-500/50 border border-[#2a4a5e] mb-2 sm:mb-3 text-sm sm:text-base"
                         type="search"
                     />
-                    <div className="max-h-48 overflow-y-auto space-y-2 scrollbar-thin scrollbar-thumb-[#2a4a5e]">
+                    <div className="max-h-32 sm:max-h-48 overflow-y-auto space-y-2 scrollbar-thin scrollbar-thumb-[#2a4a5e]">
                         {filteredFriends?.map((friend: Friend) => {
                             const friendData = allUsers?.find((u: Friend) => u.userId === friend.userId);
                             const isChecked = selectedFriends.includes(friend.userId);
@@ -131,7 +131,7 @@ const CreateGroup = () => {
                             return (
                                 <label
                                     key={friend.userId}
-                                    className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${
+                                    className={`flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-xl cursor-pointer transition-all ${
                                         isChecked ? "bg-cyan-600/20 border border-cyan-500" : "bg-[#0c1317] border border-[#2a4a5e] hover:border-[#3a5a7e]"
                                     } ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
                                 >
@@ -145,9 +145,9 @@ const CreateGroup = () => {
                                     <img
                                         src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${friendData?.fname}&backgroundColor=b6e3f4`}
                                         alt={friendData?.fname}
-                                        className="w-8 h-8 rounded-full"
+                                        className="w-7 h-7 sm:w-8 sm:h-8 rounded-full"
                                     />
-                                    <span className="text-white">
+                                    <span className="text-white text-sm sm:text-base">
                                         {friendData?.fname} {friendData?.lname}
                                     </span>
                                 </label>
@@ -159,9 +159,9 @@ const CreateGroup = () => {
                     </div>
                 </div>
 
-                <div className="flex gap-3 pt-2">
+                <div className="flex gap-2 sm:gap-3 pt-2">
                     <button
-                        className="flex-1 px-4 py-3 text-white bg-[#2a4a5e] rounded-xl hover:bg-[#3a5a7e] transition-colors font-medium"
+                        className="flex-1 px-3 py-2.5 sm:px-4 sm:py-3 text-white bg-[#2a4a5e] rounded-xl hover:bg-[#3a5a7e] transition-colors font-medium text-sm sm:text-base"
                         onClick={() => {
                             closeModal();
                             setShowItems("FRIENDS");
@@ -173,7 +173,7 @@ const CreateGroup = () => {
                     <button
                         onClick={handleSubmit}
                         disabled={!groupname.trim() || loading}
-                        className="flex-1 px-4 py-3 text-white bg-gradient-to-r from-cyan-600 to-blue-600 rounded-xl hover:opacity-90 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 px-3 py-2.5 sm:px-4 sm:py-3 text-white bg-gradient-to-r from-cyan-600 to-blue-600 rounded-xl hover:opacity-90 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                     >
                         {loading ? (
                             <div className="flex items-center justify-center gap-2">

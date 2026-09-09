@@ -15,9 +15,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-            <div className="bg-gradient-to-b from-[#1f3445] to-[#0d1f2d] rounded-2xl shadow-2xl w-full max-w-md border border-[#2a4a5e] relative">
+            <div className="bg-gradient-to-b from-[#1f3445] to-[#0d1f2d] rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto border border-[#2a4a5e] relative">
                 <button
-                    className="absolute top-4 right-4 p-2 text-gray-400 hover:text-white hover:bg-[#2a4a5e] rounded-lg transition-colors z-10"
+                    className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2 text-gray-400 hover:text-white hover:bg-[#2a4a5e] rounded-lg transition-colors z-10"
                     onClick={() => {
                         onClose();
                         setShowItems("FRIENDS");
@@ -25,7 +25,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
                 >
                     <IoClose className="text-xl" />
                 </button>
-                <div className="p-6">{children}</div>
+                <div className="p-4 sm:p-6">{children}</div>
             </div>
         </div>
     );
