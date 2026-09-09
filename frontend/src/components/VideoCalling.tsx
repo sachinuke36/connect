@@ -374,10 +374,16 @@ const Room = () => {
         if (!socket) return;
 
         const handleOffer = async ({ from, to, offer }: { from: string; to: string; offer: RTCSessionDescriptionInit }) => {
-            console.log("Received offer from:", from);
+            console.log("[WebRTC] Received offer from:", from, "isInitiator:", isInitiator);
+
+            // Only the receiver should process offers
+            if (isInitiator) {
+                console.log("[WebRTC] Ignoring offer - I am the initiator");
+                return;
+            }
 
             if (peerConnectionRef.current && peerConnectionRef.current.remoteDescription) {
-                console.log("Already have remote description, ignoring duplicate offer");
+                console.log("[WebRTC] Already have remote description, ignoring duplicate offer");
                 return;
             }
 
@@ -416,20 +422,31 @@ const Room = () => {
         };
 
         const handleAnswer = async ({ from, to, answer }: { from: string; to: string; answer: RTCSessionDescriptionInit }) => {
-            console.log("Received answer from:", from);
-            if (!peerConnectionRef.current) {
-                console.error("No peer connection when receiving answer");
+            console.log("[WebRTC] Received answer from:", from, "isInitiator:", isInitiator);
+
+            // Only the initiator (caller) should process answers
+            if (!isInitiator) {
+                console.log("[WebRTC] Ignoring answer - I am not the initiator");
                 return;
             }
 
-            if (peerConnectionRef.current.remoteDescription) {
-                console.log("Already have remote description, ignoring duplicate answer");
+            if (!peerConnectionRef.current) {
+                console.error("[WebRTC] No peer connection when receiving answer");
+                return;
+            }
+
+            // Check signaling state instead of just remoteDescription
+            if (peerConnectionRef.current.signalingState !== "have-local-offer") {
+                console.log("[WebRTC] Ignoring answer - signaling state is:", peerConnectionRef.current.signalingState);
                 return;
             }
 
             try {
+                console.log("[WebRTC] Setting remote description (answer)");
                 await peerConnectionRef.current.setRemoteDescription(new RTCSessionDescription(answer));
+                console.log("[WebRTC] Remote description set successfully");
 
+                // Process queued ICE candidates
                 while (iceCandidatesQueue.current.length > 0) {
                     const candidate = iceCandidatesQueue.current.shift();
                     if (candidate) {
@@ -439,7 +456,7 @@ const Room = () => {
 
                 callInfoRef.current = [from, to];
             } catch (error) {
-                console.error("Error handling answer:", error);
+                console.error("[WebRTC] Error handling answer:", error);
             }
         };
 
