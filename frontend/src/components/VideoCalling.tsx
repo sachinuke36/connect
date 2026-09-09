@@ -39,36 +39,41 @@ const Room = () => {
     const [callDuration, setCallDuration] = useState<string>("00:00");
 
     // ICE servers configuration - TURN servers are required for production
-    // to relay traffic when direct peer-to-peer connection fails
+    const turnUsername = import.meta.env.VITE_TURN_USERNAME;
+    const turnCredential = import.meta.env.VITE_TURN_CREDENTIAL;
+
+    // Debug: log TURN configuration
+    console.log("[WebRTC] TURN configured:", !!turnUsername && !!turnCredential);
+
     const servers: RTCConfiguration = {
         iceServers: [
-            // STUN servers (for discovering public IP)
+            // STUN servers
             { urls: "stun:stun.l.google.com:19302" },
             { urls: "stun:stun1.l.google.com:19302" },
-            // TURN servers (for relaying when direct connection fails)
-            // Using Metered.ca free TURN servers - get your own at https://www.metered.ca/
+            // TURN servers - using Metered.ca
             {
-                urls: "turn:a.relay.metered.ca:80",
-                username: import.meta.env.VITE_TURN_USERNAME || "free",
-                credential: import.meta.env.VITE_TURN_CREDENTIAL || "free",
+                urls: "turn:sachinuke36.relay.metered.ca:80",
+                username: turnUsername,
+                credential: turnCredential,
             },
             {
-                urls: "turn:a.relay.metered.ca:80?transport=tcp",
-                username: import.meta.env.VITE_TURN_USERNAME || "free",
-                credential: import.meta.env.VITE_TURN_CREDENTIAL || "free",
+                urls: "turn:sachinuke36.relay.metered.ca:80?transport=tcp",
+                username: turnUsername,
+                credential: turnCredential,
             },
             {
-                urls: "turn:a.relay.metered.ca:443",
-                username: import.meta.env.VITE_TURN_USERNAME || "free",
-                credential: import.meta.env.VITE_TURN_CREDENTIAL || "free",
+                urls: "turn:sachinuke36.relay.metered.ca:443",
+                username: turnUsername,
+                credential: turnCredential,
             },
             {
-                urls: "turns:a.relay.metered.ca:443?transport=tcp",
-                username: import.meta.env.VITE_TURN_USERNAME || "free",
-                credential: import.meta.env.VITE_TURN_CREDENTIAL || "free",
+                urls: "turns:sachinuke36.relay.metered.ca:443?transport=tcp",
+                username: turnUsername,
+                credential: turnCredential,
             },
         ],
         iceCandidatePoolSize: 10,
+        iceTransportPolicy: turnUsername ? "all" : "all", // Use "relay" to force TURN for testing
     };
 
     // Call duration timer
@@ -117,7 +122,21 @@ const Room = () => {
         };
 
         pc.oniceconnectionstatechange = () => {
-            console.log("ICE connection state:", pc.iceConnectionState);
+            console.log("[WebRTC] ICE connection state:", pc.iceConnectionState);
+            if (pc.iceConnectionState === "failed") {
+                console.error("[WebRTC] ICE connection failed - TURN server may not be working");
+                setConnectionStatus("Connection failed - retrying...");
+                // Try to restart ICE
+                pc.restartIce();
+            }
+        };
+
+        pc.onicegatheringstatechange = () => {
+            console.log("[WebRTC] ICE gathering state:", pc.iceGatheringState);
+        };
+
+        pc.onsignalingstatechange = () => {
+            console.log("[WebRTC] Signaling state:", pc.signalingState);
         };
 
         pc.onconnectionstatechange = () => {
@@ -260,9 +279,14 @@ const Room = () => {
 
         // Prevent initialization without required params
         if (!remoteId || !socket) {
-            console.log("Missing remoteId or socket, skipping initialization");
+            console.log("[WebRTC] Missing remoteId or socket, skipping initialization");
+            console.log("[WebRTC] remoteId:", remoteId, "socket:", !!socket);
             return;
         }
+
+        // Check socket connection status
+        console.log("[WebRTC] Socket connected:", socket.connected);
+        console.log("[WebRTC] Socket ID:", socket.id);
 
         hasInitialized.current = true;
         let mounted = true;
@@ -307,7 +331,8 @@ const Room = () => {
         }
 
         const initializeCall = async () => {
-            console.log("Initializing call, isInitiator:", isInitiator, "remoteId:", remoteId, "type:", callType);
+            console.log("[WebRTC] Initializing call, isInitiator:", isInitiator, "remoteId:", remoteId, "type:", callType);
+            console.log("[WebRTC] ICE servers configured:", servers.iceServers?.length);
             const stream = await startMyMedia();
 
             if (!stream || !mounted) {
