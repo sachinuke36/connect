@@ -48,11 +48,20 @@ io?.on("connection", async (socket) => {
         // console.log(socketToGroupMap)
         console.log(`User ${socket.id} joined group with ID: ${groupId}`);
     });
+    // Re-register user socket mapping (for call rooms)
+    socket?.on("register-user", ({ userId }) => {
+        if (userId) {
+            console.log(`[CALL] Re-registering user ${userId} with socket ${socket.id}`);
+            userToSocketIdMap[userId] = socket.id;
+        }
+    });
     //sockets for video call
     socket?.on("room:join", (data) => {
         const { to, from, roomId } = data;
+        console.log(`[CALL] room:join - from: ${from}, to: ${to}, roomId: ${roomId}`);
         const userSocketId = (0, exports.getReceiverSocketId)(from);
         const toSocketId = (0, exports.getReceiverSocketId)(to);
+        console.log(`[CALL] userSocketId: ${userSocketId}, toSocketId: ${toSocketId}`);
         if (toSocketId)
             io?.to(toSocketId).emit("incoming:call", data);
         io?.to(roomId).emit("user:joined", { userId: from, socketId: socket.id });
@@ -60,19 +69,41 @@ io?.on("connection", async (socket) => {
         io?.to(userSocketId).emit("room:join", data);
     });
     socket?.on("offer", ({ from, to, offer }) => {
-        io?.to((0, exports.getReceiverSocketId)(to)).emit("offer", { offer, from, to });
+        console.log(`[CALL] offer - from: ${from}, to: ${to}`);
+        const toSocketId = (0, exports.getReceiverSocketId)(to);
+        console.log(`[CALL] sending offer to socketId: ${toSocketId}`);
+        if (toSocketId)
+            io?.to(toSocketId).emit("offer", { offer, from, to });
     });
     socket?.on("accepted:call", ({ from, to }) => {
+        console.log(`[CALL] accepted:call - from: ${from}, to: ${to}`);
         io?.to((0, exports.getReceiverSocketId)(from)).emit("accepted:call");
     });
+    // Handle user:ready signal - receiver is ready to receive offer
+    socket?.on("user:ready", ({ to, from }) => {
+        console.log(`[CALL] user:ready - from: ${from}, to: ${to}`);
+        const toSocketId = (0, exports.getReceiverSocketId)(to);
+        if (toSocketId) {
+            console.log(`[CALL] sending user:ready signal to socketId: ${toSocketId}`);
+            io?.to(toSocketId).emit("user:ready", { from });
+        }
+    });
     socket?.on("call-declined", ({ from, to }) => {
+        console.log(`[CALL] call-declined - from: ${from}, to: ${to}`);
         io?.to((0, exports.getReceiverSocketId)(from)).emit("call-declined");
     });
     socket?.on("answer", ({ from, to, answer }) => {
-        io?.to((0, exports.getReceiverSocketId)(from)).emit("answer", { answer, from, to });
+        console.log(`[CALL] answer - from: ${from}, to: ${to}`);
+        const toSocketId = (0, exports.getReceiverSocketId)(to);
+        console.log(`[CALL] sending answer to socketId: ${toSocketId}`);
+        if (toSocketId)
+            io?.to(toSocketId).emit("answer", { answer, from, to });
     });
     socket?.on("icecandidate", ({ candidate, to }) => {
-        io?.to((0, exports.getReceiverSocketId)(to)).emit("icecandidate", { candidate });
+        console.log(`[CALL] icecandidate - to: ${to}`);
+        const toSocketId = (0, exports.getReceiverSocketId)(to);
+        if (toSocketId)
+            io?.to(toSocketId).emit("icecandidate", { candidate });
     });
     socket?.on("end-call", ({ to, from }) => {
         io?.to((0, exports.getReceiverSocketId)(to)).emit("end-call", { to, from });

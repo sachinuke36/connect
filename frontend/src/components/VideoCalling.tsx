@@ -478,18 +478,31 @@ const Room = () => {
             endCallHandler();
         };
 
+        // Debug: log all answer events received
+        const debugAnswerListener = (data: any) => {
+            console.log("[WebRTC DEBUG] Raw answer event received:", data);
+        };
+        socket.on("answer", debugAnswerListener);
+
         socket.on("offer", handleOffer);
         socket.on("answer", handleAnswer);
         socket.on("icecandidate", handleIceCandidate);
         socket.on("call-ended", handleCallEnded);
 
+        // Re-register socket mapping when joining call room
+        if (userId) {
+            console.log("[WebRTC] Re-registering socket for call, userId:", userId);
+            socket.emit("register-user", { userId });
+        }
+
         return () => {
+            socket.off("answer", debugAnswerListener);
             socket.off("offer", handleOffer);
             socket.off("answer", handleAnswer);
             socket.off("icecandidate", handleIceCandidate);
             socket.off("call-ended", handleCallEnded);
         };
-    }, [socket, startMyMedia, createPeerConnection, endCallHandler]);
+    }, [socket, startMyMedia, createPeerConnection, endCallHandler, isInitiator, userId]);
 
     // Cleanup on unmount
     useEffect(() => {

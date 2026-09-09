@@ -52,6 +52,14 @@ io?.on("connection", async (socket) => {
         console.log(`User ${socket.id} joined group with ID: ${groupId}`);
       });
 
+      // Re-register user socket mapping (for call rooms)
+      socket?.on("register-user", ({ userId }) => {
+        if (userId) {
+          console.log(`[CALL] Re-registering user ${userId} with socket ${socket.id}`);
+          userToSocketIdMap[userId] = socket.id;
+        }
+      });
+
 
       //sockets for video call
       socket?.on("room:join",(data)=>{
