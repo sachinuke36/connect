@@ -30,16 +30,15 @@ io?.on("connection", async (socket) => {
     if (oduserId) {
         console.log(`[SOCKET] User ${oduserId} connected with socket ${socket.id}`);
         userToSocketIdMap[oduserId] = socket.id;
-        // Update user online status
-        try {
-            await db_config_1.prisma.user.update({
-                where: { userId: oduserId },
-                data: { isOnline: true, lastSeen: new Date() }
-            });
-        }
-        catch (error) {
-            console.error("Error updating online status:", error);
-        }
+        // Note: Online status DB updates commented out - run prisma migrate first
+        // try {
+        //     await prisma.user.update({
+        //         where: { userId: oduserId },
+        //         data: { isOnline: true, lastSeen: new Date() }
+        //     });
+        // } catch (error) {
+        //     console.error("Error updating online status:", error);
+        // }
     }
     io?.emit("getOnlineUsers", Object.keys(userToSocketIdMap));
     socketToGroupMap[socket.id] = new Set();
@@ -164,16 +163,15 @@ io?.on("connection", async (socket) => {
         console.log("user disconnected", socket?.id);
         for (const oduserId in userToSocketIdMap) {
             if (userToSocketIdMap[oduserId] === socket.id) {
-                // Update last seen
-                try {
-                    await db_config_1.prisma.user.update({
-                        where: { userId: oduserId },
-                        data: { lastSeen: new Date(), isOnline: false }
-                    });
-                }
-                catch (error) {
-                    console.error("Error updating last seen:", error);
-                }
+                // Note: Online status DB updates commented out - run prisma migrate first
+                // try {
+                //   await prisma.user.update({
+                //     where: { userId: oduserId },
+                //     data: { lastSeen: new Date(), isOnline: false }
+                //   });
+                // } catch (error) {
+                //   console.error("Error updating last seen:", error);
+                // }
                 delete userToSocketIdMap[oduserId];
                 break;
             }
