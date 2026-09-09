@@ -28,6 +28,7 @@ io?.on("connection", async (socket) => {
     const queryUserId = socket.handshake.query.userId;
     const oduserId = Array.isArray(queryUserId) ? queryUserId[0] : queryUserId;
     if (oduserId) {
+        console.log(`[SOCKET] User ${oduserId} connected with socket ${socket.id}`);
         userToSocketIdMap[oduserId] = socket.id;
         // Update user online status
         try {
@@ -51,8 +52,10 @@ io?.on("connection", async (socket) => {
     // Re-register user socket mapping (for call rooms)
     socket?.on("register-user", ({ userId }) => {
         if (userId) {
-            console.log(`[CALL] Re-registering user ${userId} with socket ${socket.id}`);
+            const oldSocketId = userToSocketIdMap[userId];
+            console.log(`[CALL] Re-registering user ${userId}: ${oldSocketId} -> ${socket.id}`);
             userToSocketIdMap[userId] = socket.id;
+            console.log(`[CALL] Updated mappings:`, JSON.stringify(userToSocketIdMap));
         }
     });
     //sockets for video call
@@ -94,8 +97,9 @@ io?.on("connection", async (socket) => {
     });
     socket?.on("answer", ({ from, to, answer }) => {
         console.log(`[CALL] answer - from: ${from}, to: ${to}`);
+        console.log(`[CALL] Current socket mappings:`, JSON.stringify(userToSocketIdMap));
         const toSocketId = (0, exports.getReceiverSocketId)(to);
-        console.log(`[CALL] sending answer to socketId: ${toSocketId}`);
+        console.log(`[CALL] sending answer to socketId: ${toSocketId} (looked up userId: ${to})`);
         if (toSocketId)
             io?.to(toSocketId).emit("answer", { answer, from, to });
     });
